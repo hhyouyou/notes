@@ -3,7 +3,7 @@
 
 ## 概述
 
-本章准备讲java的集合框架，collection
+本章准备记录java的集合框架，collection
 
 
 ### List

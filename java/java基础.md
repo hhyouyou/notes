@@ -155,6 +155,31 @@ String为什么是不可变的：内部实现是被final修饰的数组，初始
 
 
 
+第一行是无法通过编译的，这个例子是用来假设举例的。
+数组是协变的，而泛型不是。不能实例化泛型类型的数组,除非type参数是一个无界通配符。
+
+```java
+new List<String>[3]; is illegal
+new List<?>[3]; is legal
+```
+
+如果java中的的泛型是协变的，那么就会出现，在`lsa`中`List<String>`类型对象中添加` li(List<Integer>)`, 这样会导致`ClassCastException`。
+虽然他们的父类都是object，但是在jvm中最终进行转换的时候，还是会把泛型**擦除(*erasure* )**转换成的实际类型。`List<Integer>`转换成`List<String>`自然是转换错误了。
+
+
+```java
+List<String>[] lsa = new List<String>[10]; // illegal
+Object[] oa = lsa;  // OK because List<String> is a subtype of Object
+List<Integer> li = new ArrayList<Integer>();
+li.add(new Integer(3));
+oa[0] = li; 
+String s = lsa[0].get(0);
+```
+
+> 参考：https://www.ibm.com/developerworks/java/library/j-jtp01255/index.html
+
+
+
 ### 9. 反射
 
 

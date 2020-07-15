@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="79ee3ea1-c065-4d6a-bcfc-20e108dfb8e5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/java/java-jvm.md" beforeDir="false" afterPath="$PROJECT_DIR$/java/java-jvm.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/java/java基础.md" beforeDir="false" afterPath="$PROJECT_DIR$/java/java基础.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -66,7 +66,10 @@
       <option name="presentableId" value="Default" />
       <updated>1594126361986</updated>
       <workItem from="1594126365446" duration="5422000" />
-      <workItem from="1594214932269" duration="7071000" />
+      <workItem from="1594214932269" duration="7122000" />
+      <workItem from="1594361381860" duration="609000" />
+      <workItem from="1594646142383" duration="1805000" />
+      <workItem from="1594792940912" duration="108000" />
     </task>
     <task id="LOCAL-00001" summary="新增文件">
       <created>1594289002557</created>
@@ -82,7 +85,14 @@
       <option name="project" value="LOCAL" />
       <updated>1594290086349</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="新增">
+      <created>1594305543727</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1594305543727</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -91,21 +101,24 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="新增文件" />
     <MESSAGE value="迁移历史文档" />
-    <option name="LAST_COMMIT_MESSAGE" value="迁移历史文档" />
+    <MESSAGE value="新增" />
+    <option name="LAST_COMMIT_MESSAGE" value="新增" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="372" y="109" key="CommitChangelistDialog2" timestamp="1594290085744">
-      <screen x="0" y="0" width="1536" height="834" />
+    <state x="2385" y="137" key="CommitChangelistDialog2" timestamp="1594305542389">
+      <screen x="1920" y="0" width="1920" height="1050" />
     </state>
     <state x="372" y="109" key="CommitChangelistDialog2/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594290085744" />
-    <state x="361" y="150" key="Vcs.Push.Dialog.v2" timestamp="1594290088288">
-      <screen x="0" y="0" width="1536" height="834" />
+    <state x="2385" y="137" key="CommitChangelistDialog2/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@1920.0.1920.1050" timestamp="1594305542389" />
+    <state x="2371" y="189" key="Vcs.Push.Dialog.v2" timestamp="1594305545702">
+      <screen x="1920" y="0" width="1920" height="1050" />
     </state>
     <state x="361" y="150" key="Vcs.Push.Dialog.v2/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594290088288" />
-    <state x="562" y="334" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1594288921994">
+    <state x="2371" y="189" key="Vcs.Push.Dialog.v2/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@1920.0.1920.1050" timestamp="1594305545702" />
+    <state x="562" y="334" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1594793051383">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="562" y="334" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594288921994" />
+    <state x="562" y="334" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594793051382" />
     <state x="2524" y="262" key="git4idea.merge.GitPullDialog" timestamp="1594305511974">
       <screen x="1920" y="0" width="1920" height="1050" />
     </state>

@@ -14,7 +14,7 @@
 
 
 
-### 1. Java 类初始化的一个过程
+### 1. Java 类初始化的顺序
 
 **初始化一般遵循3个原则**：
 
@@ -122,14 +122,16 @@ String为什么是不可变的：内部实现是被final修饰的数组，初始
 
 1. String不可变，StringBuffer和StringBuilder可变
    1. String线程安全，StringBuilder不是线程安全， StringBuffer是线程安全，内部使用 synchronized
-
+   
 #### String Pool
 
 字符串常量池中保存着所有字符串字面量，这些字面量实在编译时确定的。还可以使用String.intern()方法在运行时过程将字符串添加到String pool中。
 
 在java7之前，String pool被放在运行时常量池内。在Java7， String pool被移动到堆中。
 
+#### 参考文章
 
+> [在Java虚拟机中，字符串常量到底存放在哪](https://juejin.im/post/5c3d3121e51d4551741171fe)
 
 ### 4. 关键字
 
@@ -153,17 +155,149 @@ String为什么是不可变的：内部实现是被final修饰的数组，初始
 
 3. 静态语句块：在类初始化的时候运行一次
 
-4. 静态内部类：非静态内部类依赖
+4. 静态内部类：非静态内部类依赖外部实例。静态内部类只能访问外部类的静态变量和方法。
+
+5. 静态导包：使用静态变量和方法时，无须指定 ClassName ,简化代码
+
+6. 初始化顺序：见上文
 
 
 
 ### 5. Object
 
+```java
+public final native Class<?> getClass();
+public native int hashCode();
+public boolean equals(Object obj) {return (this == obj);}
+protected native Object clone() throws CloneNotSupportedException;
+public String toString() {
+        return getClass().getName() + "@" + Integer.toHexString(hashCode());}
+public final native void notify();
+public final native void notifyAll();
+public final native void wait(long timeout) throws InterruptedException;
+public final void wait(long timeout, int nanos) throws InterruptedException;
+public final void wait() throws InterruptedException {wait(0);}
+protected void finalize() throws Throwable {}
+```
+
+#### equals()
+
+1. 等价关系：自反性、对称性、一致性、传递性、和null比较为false
+2. 实现
+   * 检查引用是否相等
+   * 检查类型是否一致
+   * 对object进行类型转换
+   * 判断关键域是否相等
+
+
+
+#### hashCode()
+
+hashCode() 返回哈希值。
+
+> 在覆盖 equals() 方法时应当总是覆盖 hashCode() 方法，保证等价的两个对象哈希值也相等。
+>
+> HashSet 和 HashMap 等集合类使用了 hashCode() 方法来计算对象应该存储的位置，因此要将对象添加到这些集合类中，需要让对应的类实现 hashCode() 方法。
+>
+> 理想的哈希函数应当具有均匀性，即不相等的对象应当均匀分布到所有可能的哈希值上。这就要求了哈希函数要把所有域的值都考虑进来。可以将每个域都当成 R 进制的某一位，然后组成一个 R 进制的整数。
+>
+> R 一般取 31，因为它是一个奇素数，如果是偶数的话，当出现乘法溢出，信息就会丢失，因为与 2 相乘相当于向左移一位，最左边的位丢失。并且一个数与 31 相乘可以转换成移位和减法：`31*x == (x<<5)-x`，编译器会自动进行这个优化。
+
+ 
+
+#### toString()
+
+getClass().getName() + "@" + Integer.toHexString(hashCode())
+
+默认返回类名 + @ + hashCode的无符号十六进制表示
+
+
+
+#### clone()
+
+1. 类实现cloneable接口才能调用clone()接口，不然会抛 CloneNotSupportedException
+2. 浅拷贝
+3. 深拷贝
+4. 最好使用手写的构造函数或者工厂来实现clone的需求
+
 
 
 ### 6. 继承
 
+#### 访问权限
 
+private、protected、public、default
+
+#### 抽象类与接口
+
+1. 抽象类
+
+   抽象类和抽象方法都使用abstract关键字进行声明。如果一个类中包换抽象方法，该类就必须被申明为抽象类。
+
+   抽象类和普通类最大的区别就是，抽象类不能被实例化只能被继承。
+
+2. 接口
+
+   * 接口是抽象类的延伸
+   * 接口可以继承接口
+   * 接口的成员（字段、方法）默认都是pubilc的，而且不允许定义为private或protected。接口的字段默认是static和final的
+   
+   ```java
+   public interface DemoInterface {
+       // 常量 == 默认是static和final的
+       String NAME = "123";
+       // 默认方法
+       default void defaultMethod() {
+           System.out.println("defaultMethod");
+       }
+       // 需要实现的方法
+       void needImplMethod();
+   }
+   
+   public class DemoInterfaceImpl implements DemoInterface {
+       @Override
+       public void needImplMethod() {
+           String name = DemoInterface.NAME;
+           System.out.println(name);
+           new DemoInterfaceImpl().defaultMethod();
+       }
+   }
+   ```
+   
+   
+   
+3. 两者比较
+
+   * 从设计上看，抽象类提供了一种 **is-a**  的关系，需要满足子类对象必须能够替换所有父类对象的 “**里氏替换原则**”。而接口更像是一种 **like-a** 关系，它只是提供一种方法实现契约，不要求接口和实现类有这种 is-a 强关系。
+   * 从使用上来看，一个类只能继承一个抽象类，但是可以实现多个接口。
+   * 接口的字段只能是static和final的。接口的成员只能是public。
+   * 使用时，接口可以让不想关的类都实现一个方法。但是抽象类主要是，把几个相关类的共性代码抽取出一个抽象类。
+
+#### 参考
+
+[Abstract Methods and Classes](https://docs.oracle.com/javase/tutorial/java/IandI/abstract.html)
+
+[Java 的接口和抽象类详解](https://juejin.im/entry/576d0e73816dfa0055cb6e07)
+
+
+
+####  重写与重载
+
+1. 重写（@Override）
+
+   存在于继承体系中，指的是子类实现了一个与父类在方法声明上完全相同的一个方法。
+
+   为了满足**里氏替换原则**，重写有以下三个限制：
+
+   * 子类方法的访问权限必须大于等于父类方法
+   * 子类方法的返回类型必须是父类方法返回类型或者是其子类
+   * 子类方法抛出的异常类型必须是父类抛出异常类型或者是其子类
+
+2.  重载
+
+   在同一个类中，存在多个相同方法名称，但是参数类型、个数、顺序至少有一个不同。
+
+   如果只有返回值不同，不算是重载。
 
 ### 7. 异常
 
@@ -199,6 +333,12 @@ String s = lsa[0].get(0);
 
 
 ### 9. 反射
+
+每个类都有个一Class对象，包含了类有关信息。当编译一个新类时，会产生一个同名的.class文件，该文件内容保存着Class对象。
+
+类加载，相当于Class对象的加载，类在第一次使用时才动态加载到JVM中。也可以使用
+
+
 
 
 

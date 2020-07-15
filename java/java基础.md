@@ -301,9 +301,22 @@ private、protected、public、default
 
 ### 7. 异常
 
+`Throwable` 可以用来表示任何可以作为异常抛出的类，分为两种： **Error** 和 **Exception**。其中 Error 用来表示 JVM 无法处理的错误，Exception 分为两种：
+
+* 受检异常：需要使用 try catch 语句捕获并进行处理，并且可以从异常中回复
+* 非受检异常：是程序运行时错误，例如除0会引发 Arithmetic Exception，此时程序崩溃并且无法恢复。
+
+
+
 
 
 ### 8. 泛型
+
+类型擦除
+
+
+
+
 
 
 
@@ -336,7 +349,19 @@ String s = lsa[0].get(0);
 
 每个类都有个一Class对象，包含了类有关信息。当编译一个新类时，会产生一个同名的.class文件，该文件内容保存着Class对象。
 
-类加载，相当于Class对象的加载，类在第一次使用时才动态加载到JVM中。也可以使用
+类加载，相当于Class对象的加载，类在第一次使用时才动态加载到`JVM`中。也可以使用`Class.froName()`这种方式来控制类的加载。
+
+反射可以提供运行时的类信息，并且这个类可以在运行时才加载进来，甚至在编译时期该类的.class	
+
+* Field :  读取修改字段
+* Method：invoke() 调用犯方法
+* Constructor:  使用newInstance()创建新的对象
+
+优点： 可扩展、ide开发工具、调试
+
+缺点： 性能开销、安全限制、内部暴露
+
+Class 和 java.lang.reflect 一起对反射提供支持，java.lang.reflect 类库主要包含以下三个类：
 
 
 

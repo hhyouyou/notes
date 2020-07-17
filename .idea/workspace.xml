@@ -2,8 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="79ee3ea1-c065-4d6a-bcfc-20e108dfb8e5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/MarkDown语法（简洁）.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/java/Iterator和Iterable的区别和联系.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring/spring validation.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/数据库/redis小册笔记.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/算法/heapSort.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/算法/mergeSort.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/java/java基础.md" beforeDir="false" afterPath="$PROJECT_DIR$/java/java基础.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/java/java并发编程.md" beforeDir="false" afterPath="$PROJECT_DIR$/java/java并发编程.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/java/java设计模式.md" beforeDir="false" afterPath="$PROJECT_DIR$/java/设计模式/java设计模式.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/java/java集合框架.md" beforeDir="false" afterPath="$PROJECT_DIR$/java/java集合框架.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/java/单例.md" beforeDir="false" afterPath="$PROJECT_DIR$/java/设计模式/单例.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,14 +43,24 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="jdk.selected.JAVA_MODULE" value="1.8" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/spring" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/java" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\dongj\IdeaProjects\learn\notes\java\设计模式" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\dongj\IdeaProjects\learn\notes\spring" />
       <recent name="C:\Users\dongj\IdeaProjects\learn\notes\java" />
+      <recent name="C:\Users\dongj\IdeaProjects\learn\notes" />
+      <recent name="C:\Users\dongj\IdeaProjects\learn\notes\数据库" />
+      <recent name="C:\Users\dongj\IdeaProjects\learn\notes\spring" />
+      <recent name="C:\Users\dongj\IdeaProjects\learn\notes\算法" />
     </key>
   </component>
   <component name="ServiceViewManager">
@@ -69,7 +89,9 @@
       <workItem from="1594214932269" duration="7122000" />
       <workItem from="1594361381860" duration="609000" />
       <workItem from="1594646142383" duration="1805000" />
-      <workItem from="1594792940912" duration="108000" />
+      <workItem from="1594792940912" duration="5096000" />
+      <workItem from="1594831363009" duration="30000" />
+      <workItem from="1594912335524" duration="8191000" />
     </task>
     <task id="LOCAL-00001" summary="新增文件">
       <created>1594289002557</created>
@@ -92,7 +114,21 @@
       <option name="project" value="LOCAL" />
       <updated>1594305543727</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="新增">
+      <created>1594793076045</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1594793076045</updated>
+    </task>
+    <task id="LOCAL-00005" summary="feat：新增">
+      <created>1594831380149</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1594831380149</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -102,31 +138,48 @@
     <MESSAGE value="新增文件" />
     <MESSAGE value="迁移历史文档" />
     <MESSAGE value="新增" />
-    <option name="LAST_COMMIT_MESSAGE" value="新增" />
+    <MESSAGE value="feat：新增" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat：新增" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2385" y="137" key="CommitChangelistDialog2" timestamp="1594305542389">
-      <screen x="1920" y="0" width="1920" height="1050" />
+    <state x="372" y="109" key="CommitChangelistDialog2" timestamp="1594831379406">
+      <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="372" y="109" key="CommitChangelistDialog2/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594290085744" />
+    <state x="372" y="109" key="CommitChangelistDialog2/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594793075427" />
     <state x="2385" y="137" key="CommitChangelistDialog2/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@1920.0.1920.1050" timestamp="1594305542389" />
-    <state x="2371" y="189" key="Vcs.Push.Dialog.v2" timestamp="1594305545702">
-      <screen x="1920" y="0" width="1920" height="1050" />
+    <state x="372" y="109" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1594831379406" />
+    <state x="147" y="66" key="DiffContextDialog" timestamp="1594793068686">
+      <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="361" y="150" key="Vcs.Push.Dialog.v2/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594290088288" />
+    <state x="147" y="66" key="DiffContextDialog/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594793068686" />
+    <state x="549" y="172" key="FileChooserDialogImpl" timestamp="1594804845199">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state x="549" y="172" key="FileChooserDialogImpl/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594804845199" />
+    <state x="249" y="0" key="SettingsEditor" timestamp="1594915471528">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state x="249" y="0" key="SettingsEditor/0.0.1536.834@0.0.1536.834" timestamp="1594915471528" />
+    <state x="361" y="150" key="Vcs.Push.Dialog.v2" timestamp="1594831382066">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state x="361" y="150" key="Vcs.Push.Dialog.v2/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594793078023" />
     <state x="2371" y="189" key="Vcs.Push.Dialog.v2/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@1920.0.1920.1050" timestamp="1594305545702" />
-    <state x="562" y="334" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1594793051383">
+    <state x="361" y="150" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1594831382066" />
+    <state x="562" y="334" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1594913008365">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="562" y="334" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594793051382" />
+    <state x="562" y="334" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1536.834@0.0.1536.834" timestamp="1594913008365" />
     <state x="2524" y="262" key="git4idea.merge.GitPullDialog" timestamp="1594305511974">
       <screen x="1920" y="0" width="1920" height="1050" />
     </state>
     <state x="483" y="208" key="git4idea.merge.GitPullDialog/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594290051557" />
     <state x="2524" y="262" key="git4idea.merge.GitPullDialog/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@1920.0.1920.1050" timestamp="1594305511974" />
-    <state x="267" y="180" key="new project wizard" timestamp="1594137146005">
+    <state x="267" y="180" key="new project wizard" timestamp="1594804846470">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
+    <state x="267" y="180" key="new project wizard/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594804846470" />
     <state x="2254" y="226" key="new project wizard/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@1920.0.1920.1050" timestamp="1594126384993" />
     <state x="267" y="180" key="new project wizard/0.0.1536.834@0.0.1536.834" timestamp="1594137146005" />
   </component>

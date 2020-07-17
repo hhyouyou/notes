@@ -2,6 +2,8 @@
 
 ## 概述
 
+**本文非原创，主要是抄的，自己加了些理解。仅用于个人记录！查看！**
+
 这块主要写的是java的一些基础的特性
 
 主要包括，java的特性、三大特征继承多态封装
@@ -37,7 +39,7 @@
 
 #### 基本数据类型
 
-| 类型    | 初始化值 | 字节 |
+| 类型    | 初始化值 | bit  |
 | ------- | -------- | ---- |
 | byte    | 0        | 8    |
 | short   | 0        | 16   |
@@ -61,9 +63,7 @@ Integer x = 2;     // 装箱 调用了 Integer.valueOf(2)
 int y = x;         // 拆箱 调用了 X.intValue()
 ```
 
->  ps: 这不知道怎么考
-
-#### 缓存池
+缓存池
 
 `new Integer(123) `与` Integer.valueOf(123) `的区别在于：
 
@@ -90,17 +90,18 @@ String被声明为`final`，因此无法被继承。
 
 Java8中，String内部是 char[]
 
-```jav
+```java
 public final class String
     implements java.io.Serializable, Comparable<String>, CharSequence {
     /** The value is used for character storage. */
     private final char value[];
+    private int hash;
 }
 ```
 
 Java9中，String内部是 byte[]，同时使用`coder`来标识编码
 
-```jav
+```java
 public final class String
     implements java.io.Serializable, Comparable<String>, CharSequence {
     /** The value is used for character storage. */
@@ -137,7 +138,7 @@ String为什么是不可变的：内部实现是被final修饰的数组，初始
 
 #### final
 
-修饰属性：使其不可变，如果修饰的是引用类型，还是可以修改其引用对象的。
+修饰属性：使其不可变，如果修饰的是引用类型，还可以修改其引用对象的。
 
 修饰方法：该方法不能被子类重写。
 
@@ -149,7 +150,7 @@ String为什么是不可变的：内部实现是被final修饰的数组，初始
 
 2. 静态方法：
 
-   > 在类加载的时候就存在，不依赖于任何实例。所以静态方法必须被实现。
+   > 在类加载的时候就存在，不依赖于任何实例。所有静态方法必须被实现。
    >
    > 只能访问所属类的静态属性和静态方法
 
@@ -312,13 +313,26 @@ private、protected、public、default
 
 ### 8. 泛型
 
-类型擦除
+#### 什么是泛型？
+
+泛型提供一种编译时期的类型安全。防止开发过程中不停的类型转换，确保只能把正确类型放入集合，避免运行时出现 `ClassCastException`。
+
+##### 类型擦除
+
+泛型是通过类型擦除来实现的。编译器在编译时期擦除了所有类型相关的信息，所以在运行时不存在任何类型相关信息。例如`List<String>` 在运行时仅仅使用`List`代替。
+
+#### 限定通配符和非限定通配符
+
+非限定：< ? >
+
+限定通配符：
+
+* <? extends T>它通过确保类型必须是T的子类来设定类型的上界
+* <? super T>它通过确保类型必须是T的父类来设定类型的下界
 
 
 
-
-
-
+#### eg:
 
 第一行是无法通过编译的，这个例子是用来假设举例的。
 数组是协变的，而泛型不是。不能实例化泛型类型的数组,除非type参数是一个无界通配符。
@@ -363,11 +377,31 @@ String s = lsa[0].get(0);
 
 Class 和 java.lang.reflect 一起对反射提供支持，java.lang.reflect 类库主要包含以下三个类：
 
-
-
-
-
 ### 10. 注解
+
+#### 什么是注解？
+
+Java注解是附加在代码中的一些元信息，用于一些工具在编译、运行时进行解析和使用，起到说明、配置的功能
+
+#### 注解的用处？
+
+1. 生成文档。 @param @return
+2. 在编译时进行格式检查。 @Override
+3. 跟踪代码依赖性，实现配置文件的功能。使用注解配置
+
+#### 注解的原理
+
+注解本质是一个继承了 Annotation 的特殊接口，其具体实现类是Java运行时动态生成的代理类。而我们通过反射获取注解信息的时候，返回的是Java运行时生成的动态代理对象 $Proxy1。通过代理对象调用自定义注解（接口）的方法，会最终调用 AnnotationInvocationHandler 的invoke方法。 该方法会从memberValues这个map中索引出对应的值。而memberValues的来源是Java 的常量池。
+
+#### 元注解
+
+* @Documented – 注解是否将包含在JavaDoc中
+* @Retention – 什么时候使用该注解
+  * source 在编译阶段丢弃（@Override, @SuppressWarnings）
+  * class 在类加载的时候丢弃。
+  * runtime 始终不会丢弃。
+* @Target – 注解用于什么地方（构造器、成员变量、方法、包、参数、类）
+* @Inherited – 是否允许子类继承该注解
 
 
 

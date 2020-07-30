@@ -105,7 +105,71 @@ Executor 管理多个异步任务的执行，而无需我们显式的管理线�
 * FixedThreadPool: 所有任务只能使用固定大小的线程池
 * SingleThreadExecutor: 只有一个线程的线程池
 
+### Executor 接口 及其 继承关系
+
 ![Executor类继承关系图](http://image-djx.test.upcdn.net/md/notes/Executor%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB%E5%9B%BE.png)
+
+* `Executor`：是一个接口，定义了一个接受Runnable对象的方法executor
+
+  ```java
+  public interface Executor { void execute(Runnable command);}
+  ```
+
+* `ExecutorService`: 是一个比`Executor` 使用更加广泛的子类接口，它提供了生命周期管理的方法，以及可以跟踪一个或多个异步任务执行状况返回`Future`的方法。shutdown()、submit()、invokeAll()等
+
+* `AbstractExecutorService`: `ExecutorService`执行方法的默认实现`
+
+* `ScheduledExecutorService`: 一个可定时调度任务的接口
+
+* `ScheduledThreadPoolExecutor`: `ScheduledExecutorService`的实现，一个可定时调度任务的线程池。(这里还用了装饰者模式，装饰定时任务？没看懂)
+
+* `ThreadPoolExecutor` : 表示一个线程池，可以通过`Executors`的静态工厂方法来创建一个拥有特定功能的线程池，并返回一个 `ExcutorService`对象。
+
+以上类、接口都在 `java.util.concurrent`包中，是JDK并发包的核心类。 其中 `ThreadPoolExecutor` 表示一个线程池。 `Executors` 类则扮演着线程池工厂的角色，通过`Executors`可以取得一个拥有特定功能的线程池。从UML图中也可以看到，`ThreadPoolExecutor` 类实现了` Executor` 接口， 因此，任何Runnable的对象都可以被`ThreadPoolExecutor `线程池调度。
+
+
+
+## Daemon
+
+守护线程是程序运行时在后台提供服务的线程，不属于程序中不可或缺部分。
+
+当所有非守护线程结束，程序终止，同时回杀死所有守护线程。
+
+
+
+## sleep()
+
+Thread.sleep(millisec) 方法会休眠当前正在执行的线程，millisec 单位为毫秒。
+
+sleep() 可能会抛出 InterruptedException, 因为异常不能跨线程传播回 main() 中，因此必须在本地进行处理。线程中抛出的其他异常也同样需要再本地进行处理。
+
+## yield()
+
+对于静态方法 Thread.yield()的调用声明了当前线程已经完成了生命周期中最重要的部分，可以切换给其它线程来执行。该方法只是对线程调度器的一个建议，而且也只是建议具有相同优先级的其他线程来运行。
+
+
+
+# 三、中断
+
+一个线程执行完毕之后会自动结束，如果在运行过程中发生异常，也会提前结束。
+
+
+
+## InterruptedEception
+
+通过调用一个线程的 interrupt()来中断线程，如果该线程处于阻塞、限期等待或者无限期等待状态，那么就会抛出InterruptedException
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

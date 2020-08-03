@@ -30,6 +30,7 @@
 
 1.  Spring中BeanDefinitionDecorator
 2.  commons-collections包中ListUtils
+3.  scheduleThreadPool 装饰任务
 
 
 

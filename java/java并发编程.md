@@ -157,7 +157,192 @@ sleep() 可能会抛出 InterruptedException, 因为异常不能跨线程传播�
 
 ## InterruptedEception
 
-通过调用一个线程的 interrupt()来中断线程，如果该线程处于阻塞、限期等待或者无限期等待状态，那么就会抛出InterruptedException
+通过调用一个线程的 interrupt()来中断线程，如果该线程处于阻塞、限期等待或者无限期等待状态，那么就会抛出InterruptedException，从而提前结束该线程。但是不能中断I/O 阻塞和 synchronized 锁阻塞。
+
+下面先启动一个线程，然后在sleep的时候，中断它，就会抛出一个 InterruptedException，从而结束线程，不执行后面的语句。
+
+```java
+public static void main(String[] args) {
+    Thread thread = new Thread(() -> {
+        try {
+            Thread.sleep(2000);
+            System.out.println("thread run");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    });
+
+    thread.start();
+    thread.interrupt();
+    System.out.println("main run");
+}
+```
+
+```java
+main run
+java.lang.InterruptedException: sleep interrupted
+at java.lang.Thread.sleep(Native Method)
+at TestInterruptedException.lambda$main$0(TestInterruptedException.java:17)
+at java.lang.Thread.run(Thread.java:748)
+```
+
+
+
+## interrupted()
+
+如果一个线程的 run() 方法执行一个无循环，并且没有执行sleep()等，会抛出 InterruptedException 的操作，那么调用线程的 interrupt() 方法就无法使该线程提前结束。
+
+但是调用 interrupt()方法会设置线程的中断标记，此时调用 inerrupted() 方法会返回 true。 因此可以在循环体重使用interrupted()方法来判断线程是否处于中断状态的，从而提前结束线程。
+
+也就是说，这个方法在线程正常运行时，无法停止运行，只能给这个线程打个标记，申请中断了。
+
+```java
+ public static void main(String[] args) {
+     Thread thread = new Thread(() -> {
+         while (!Thread.interrupted()){
+             System.out.println("123");
+         }
+         System.out.println("结束");
+     });
+
+     thread.start();
+     thread.interrupt();
+ }
+```
+
+
+
+## Executor 的中断操作
+
+调用 Executor 的  shutdown() 方法会等待线程都执行完毕之后再关闭，但是如果调用的是shutdownNow()方法，则相当于调用每个线程的interrupt()方法。
+
+```java
+public static void main(String[] args) {
+    ExecutorService executorService = Executors.newCachedThreadPool();
+    executorService.execute(() -> {
+        try {
+            Thread.sleep(2000);
+            System.out.println("thread run");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    });
+    executorService.shutdownNow();
+    System.out.println("main run");
+}
+```
+
+```java
+main run
+java.lang.InterruptedException: sleep interrupted
+	at java.lang.Thread.sleep(Native Method)
+	at ShutdownExecutor.lambda$main$0(ShutdownExecutor.java:16)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+```
+
+如果只想中断 Executor 中的一个线程，可以通过使用 submit() 方法来提交一个线程，它会返回一个 Future<?>对象，通过调用该对象的cancel(true)方法就可以中断该线程。
+
+```java
+// 中断单个线程
+Future<?> submit = executorService.submit(() -> {});
+submit.cancel(true);
+```
+
+
+
+# 四、互斥同步
+
+Java提供了两种锁机制来控制多个线程对共享资源的互斥访问，第一个是 JVM 实现的synchronized， 而另一个是 JDK 实现的 ReentrantLock 。
+
+## synckhronized
+
+1. 同步一个代码块
+
+   ```java
+   public void f(){
+       synchronized(this){
+           // ...
+       }
+   }
+   ```
+
+   它只作用于同一个对象，如果调用两个对象上的同步代码块，就不会同步。
+
+   对于以下代码块，使用ExecutorService执行了两个线程。由于test1()调用的是同一个对象的同步代码块，所以是同步执行的，当一个线程进入时，另一个线程就在等待。而test2()调用的是不同对象的同步代码块，所以两个线程就不同步了。
+
+   ```java
+   public static void main(String[] args) {
+       test1(); // 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 
+       test2(); // 0 1 2 3 4 5 6 7 8 9 10 0 1 2 3 4 11 5 6 7 8 9 12 13 14 10 11 12 13 14 
+   }
+   
+   private static void test2() {
+       SynchronizedDemo1 demo1 = new SynchronizedDemo1();
+       SynchronizedDemo1 demo2 = new SynchronizedDemo1();
+       ExecutorService executorService = Executors.newCachedThreadPool();
+       executorService.execute(() -> demo1.f1());
+       executorService.execute(() -> demo2.f1());
+       executorService.shutdown();
+   }
+   
+   private static void test1() {
+       SynchronizedDemo1 synchronizedDemo1 = new SynchronizedDemo1();
+       ExecutorService executorService = Executors.newCachedThreadPool();
+       executorService.execute(() -> synchronizedDemo1.f1());
+       executorService.execute(() -> synchronizedDemo1.f1());
+       executorService.shutdown();
+   }
+   
+   static class SynchronizedDemo1 {
+       public void f1() {
+           synchronized (this) {
+               for (int i = 0; i < 20; i++) {
+                   System.out.print(i + " ");
+               }
+           }
+       }
+   }
+   ```
+
+2. 同步一个方法
+
+   和同步代码块一样，作用于一个方法
+
+   ```java
+   public synchronized void func () {
+       // ...
+   }
+   ```
+
+3. 同步一个类
+
+   ```java
+   public void func() {
+       synchronized (SynchronizedDemo.class) {
+           // ...
+       }
+   }
+   ```
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -599,11 +599,173 @@ after
 
 
 
-## 创建线程的三种方式
+# 七、 J.U.C -AQS
 
-## 中断
+java.util.concurrent (J.U.C) 大大提高了并发性能，AQS被认为是 J.U.C 的核心。
 
-## 线程安全
+## CountDownLatch
 
-## 锁
+倒数计时，用来控制一个或者多个线程等待多个线程。
+
+维护了一个计数器cnt，每次调用 countDown() 方法会人计数器的值减1，减到0 的时候，那些因为调用await() 方法而在等待的线程就会被唤醒。
+
+```java
+public class CountDownLatchDemo {
+
+    public static void main(String[] args) throws InterruptedException {
+
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        CountDownLatch countDownLatch = new CountDownLatch(5);
+
+        executorService.execute(() -> {
+            try {
+                System.out.println("ready");
+                countDownLatch.await();
+                System.out.println("end");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        for (int i = 0; i < 5; i++) {
+            executorService.execute(() -> {
+                System.out.print("one thread count ..");
+                countDownLatch.countDown();
+            });
+        }
+
+        executorService.shutdown();
+    }
+    
+}
+```
+
+当执行countDownLatch.countDown() = 设定次数时，调用 countDownLatch.await()的线程就会被唤醒
+
+```java
+ready
+one thread count ..
+one thread count ..
+one thread count ..
+one thread count ..
+one thread count ..
+end
+```
+
+## CyclicBarrier	
+
+循环屏障，用来控制多个线程互相等待，只有当多个线程都到达时，这些线程才会继续执行。
+
+和 CountdownLatch 相似，都是通过维护计数器来实现的。线程执行 await() 方法后，计数器会减1，并进行等待，直到计数器为0，所有调用 await() 方法而在等待的线程才能继续执行。
+
+CyclicBarrier 和CountDownLatch 的一个区别是，CyclicBarrier 的计数器是通过调用 reset() 方法可以循环使用，所以它才叫做循环屏障。
+
+CyclicBarrier 有两个构造 函数， 其中parties 指示计数器的初始值，barrierAction在所有线程都到达屏障的时候会执行一次。
+
+```java
+public CyclicBarrier(int parties, Runnable barrierAction) {
+    if (parties <= 0) throw new IllegalArgumentException();
+    this.parties = parties;
+    this.count = parties;
+    this.barrierCommand = barrierAction;
+}
+```
+
+```JAVA
+public CyclicBarrier(int parties) {
+    this(parties, null);
+}
+```
+
+demo 如下
+
+```java
+public class CyclicBarrierDemo {
+    public static void main(String[] args) {
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(5);
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        for (int i = 0; i < 5; i++) {
+            executorService.execute(() -> {
+                try {
+                    System.out.println("ready...");
+                    cyclicBarrier.await();
+                    System.out.println("go!");
+                } catch (InterruptedException | BrokenBarrierException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        executorService.shutdown();
+    }
+}
+```
+
+```java
+ready...
+ready...
+ready...
+ready...
+ready...
+go!
+go!
+go!
+go!
+go!
+```
+
+
+
+## Semaphore
+
+semaphore 类似于操作系统中的信号量，可以控制对互斥资源的访问线程数。
+
+以下demo模拟来了对某个服务的并发请求，每次只能有三个客户端同时访问，请求总和为10。
+
+```java
+public class SemaphoreDemo {
+
+    public static void main(String[] args) {
+        Semaphore semaphore = new Semaphore(3);
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        for (int i = 0; i < 10; i++) {
+            executorService.execute(() -> {
+                try {
+                    semaphore.acquire();
+                    System.out.println("剩余数量" + semaphore.availablePermits());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    semaphore.release();
+                }
+            });
+        }
+        executorService.shutdown();
+    }
+}
+```
+
+```java
+剩余数量2
+剩余数量0
+剩余数量1
+剩余数量0
+剩余数量2
+剩余数量2
+剩余数量1
+剩余数量2
+剩余数量0
+剩余数量1
+```
+
+
+
+# 八、J.U.C - 其他组件
+
+## FutureTask
+
+在介绍Callable时 我们知道它可以有返回值，返回值通过 Future 进行封装。FutureTask 实现了RunnableFuture 接口，该接口继承自 Runnable和 Future 接口，这使得 FutrureTask 既可以当做一个任务执行，也可以有返回值。
+
+
+
+
 

@@ -27,11 +27,58 @@
 * 将**两个**已**排好序**的数组**合并**成**一个有序**的数组,称之为归并排序
 * 步骤：遍历两个数组，比较它们的值。谁比较小，谁先放入大数组中，直到数组遍历完成
 
+```java
+public class MergeSort {
 
 
-代码：
+    public static void main(String[] args) {
+        int[] arrays = {9, 2, 5, 1, 3, 2, 9, 5, 2, 1, 8};
+        mergeSort(arrays, 0, arrays.length - 1);
+        System.out.println(Arrays.toString(arrays));
+    }
 
-https://github.com/hhyouyou/patterns/tree/master/src/main/java/com/example/patterns/model/sort
+    public static void mergeSort(int[] arrays, int begin, int end) {
+        if (begin == end) {
+            return;
+        }
+
+        int mid = (end + begin) / 2;
+        // 左划分一块
+        mergeSort(arrays, begin, mid);
+        // 右划分一块
+        mergeSort(arrays, mid + 1, end);
+
+        merge(arrays, begin, mid, end);
+
+    }
+
+    private static void merge(int[] arrays, int begin, int mid, int end) {
+
+        int[] back = Arrays.copyOfRange(arrays, begin, end + 1);
+
+        int i = begin;
+        int j = mid + 1;
+        for (int k = begin; k <= end; k++) {
+            if (i > mid) {
+                arrays[k] = back[j++ - begin];
+            } else if (j > end) {
+                arrays[k] = back[i++ - begin];
+            } else if (back[i - begin] < back[j - begin]) {
+                arrays[k] = back[i++ - begin];
+            } else {
+                arrays[k] = back[j++ - begin];
+            }
+        }
+
+    }
+}
+```
+
+
+
+
+
+
 
 
 

@@ -127,6 +127,75 @@ Executor 管理多个异步任务的执行，而无需我们显式的管理线�
 
 以上类、接口都在 `java.util.concurrent`包中，是JDK并发包的核心类。 其中 `ThreadPoolExecutor` 表示一个线程池。 `Executors` 类则扮演着线程池工厂的角色，通过`Executors`可以取得一个拥有特定功能的线程池。从UML图中也可以看到，`ThreadPoolExecutor` 类实现了` Executor` 接口， 因此，任何Runnable的对象都可以被`ThreadPoolExecutor `线程池调度。
 
+## new ThreadPoolExecutor(...)
+
+> 线程资源必须通过线程池创建，不允许在应用内自行显示创建。——《阿里巴巴Java手册》
+
+### why
+
+1. 降低开销。创建和销毁线程会产生很大的系统开销。
+2. 易复用和管理。将线程都放在一个公用的池子中，便于统一管理，也便于复用。
+3. 解耦。将线程的创建和销毁从业务代码中分离出来。便于维护。
+
+
+
+### 构造方法
+
+```java
+public ThreadPoolExecutor(int corePoolSize,// 核心线程数
+                          int maximumPoolSize,// 线程池最大线程数
+                          long keepAliveTime,// 空闲线程存活时间
+                          TimeUnit unit,// 时间单位
+                          BlockingQueue<Runnable> workQueue,// 阻塞对列
+                          ThreadFactory threadFactory,// 线程工厂
+                          RejectedExecutionHandler handler) {// 拒绝策略
+    if (corePoolSize < 0 ||maximumPoolSize <= 0 ||
+        maximumPoolSize < corePoolSize || keepAliveTime < 0)
+        throw new IllegalArgumentException();
+    if (workQueue == null || threadFactory == null || handler == null)
+        throw new NullPointerException();
+    this.acc = System.getSecurityManager() == null ?null : AccessController.getContext();
+    this.corePoolSize = corePoolSize;
+    this.maximumPoolSize = maximumPoolSize;
+    this.workQueue = workQueue;
+    this.keepAliveTime = unit.toNanos(keepAliveTime);
+    this.threadFactory = threadFactory;
+    this.handler = handler;
+}
+```
+
+#### corePoolSize
+
+线程池中的核心线程数。提交一个任务到线程池时，会创建一个线程来执行任务，直到线程数等于corePoolSize就不再创建，此时继续提交的任务则会保存到阻塞对列中。如果调用了线程池的prestartAllCoreThreads()方法，线程池会提前创建并启动所有线程。
+
+#### maximumPoolSize
+
+线程池最大线程数，如果当前阻塞对列满了，继续提交任务，若当前线程数小于maximumPoolSize则创建新的线程执行任务。如果使用了无界的阻塞对列这个参数就没用了。
+
+#### KeepAliveTime
+
+非核心线程空闲时保持存活时间，即当线程没有任务执行时间时，继续存活的时间。
+
+#### unit
+
+线程保持活跃时间单位
+
+#### BlockingQueue workQueue
+
+用于保存等待执行任务的阻塞队列。[BlockingQueue](#常用的阻塞队列)
+
+#### ThreadFactory
+
+创建线程工厂
+
+#### RejectedExecutionHandler handler：饱和策略
+
+当队列和最大线程池都满了之后的饱和策略
+
+- CallerRunsPolicy : 调用线程处理任务
+- AbortPolicy : 抛出异常
+- DiscardPolicy : 直接丢弃
+- DiscardOldestPolicy : 丢弃队列中最老的任务，执行新任务
 
 
 ## Daemon
@@ -403,7 +472,7 @@ public static class ReentrantLockDemo {
 
 2. 性能
 
-   差不多
+   差不多。
 
 3. 等待可中断
 
@@ -559,13 +628,11 @@ after
 
 ## 可运行（RUNABLE）
 
-正在Java虚拟机中运行。但是在操作系统层面，他可能处于运行状态，也坑你等待资源调度（例如处理器资源），资源调度完成就 进入运行状态。所以该状态的可运行是指可以被运行，具体有没有运行要看底层操作系统的资源调度。
+正在Java虚拟机中运行。但是在操作系统层面，他可能处于运行状态，也可能等待资源调度（例如处理器资源），资源调度完成就 进入运行状态。所以该状态的可运行是指可以被运行，具体有没有运行要看底层操作系统的资源调度。
 
 ## 阻塞（BLOCKED）
 
 请求获取 monitor lock 从而进入 synchronized 函数或者代码块，但是其他线程已经占用了该 monitor lock，所以处于阻塞状态。要结束该状态，从而进入 RUNABLE 需要其他线程释放 monitor lock。
-
-
 
 ## 无限期等待（WAITING）
 
@@ -652,7 +719,7 @@ one thread count ..
 end
 ```
 
-## CyclicBarrier	
+## CyclicBarrier
 
 循环屏障，用来控制多个线程互相等待，只有当多个线程都到达时，这些线程才会继续执行。
 
@@ -763,7 +830,347 @@ public class SemaphoreDemo {
 
 ## FutureTask
 
-在介绍Callable时 我们知道它可以有返回值，返回值通过 Future 进行封装。FutureTask 实现了RunnableFuture 接口，该接口继承自 Runnable和 Future 接口，这使得 FutrureTask 既可以当做一个任务执行，也可以有返回值。
+在介绍Callable时 我们知道它可以有返回值，返回值通过 Future 进行封装。FutureTask 实现了RunnableFuture 接口，该接口继承自 Runnable和 Future 接口，这使得 FutureTask 既可以当做一个任务执行，也可以有返回值。
+
+```java
+public class FutureTask<V> implements RunnableFuture<V>
+```
+
+```java
+public interface RunnableFuture<V> extends Runnable, Future<V>	
+```
+
+FutureTask可用于异步获取执行结果，或者是取消执行任务的场景。当一个计算任务需要执行很长时间时，那么就可以用FutureTask 来封装这个任务，主线程在完成自己的任务之后再去获取结果。
+
+```java
+public class FutureTaskDemo {
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        FutureTask<Integer> vFutureTask = new FutureTask<>(() -> {
+            int result = 0;
+            for (int i = 0; i < 100; i++) {
+                Thread.sleep(10);
+                result = result + i;
+            }
+            return result;
+        });
+
+        Thread thread = new Thread(vFutureTask);
+        thread.start();
+
+        Thread otherThread = new Thread(() -> {
+            System.out.println("other task is running...");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        otherThread.start();
+        System.out.println(vFutureTask.get());
+    }
+}
+```
+
+```java
+other task is running...
+4950
+```
+
+
+
+## BlockingQueue
+
+java.util.concurrent.BlockingQueue 接口有以下阻塞队列实现
+
+* FIFO 队列 ：LinkedBlockingQueue、ArrayBlockingQueue(固定长度)
+* 优先级队列：PriorityBlockingQueue
+
+提供了阻塞的take()和 put() 方法： 
+
+如果队列为空 take()将阻塞，直到队列中有内容。
+
+如果队列为满put()将阻塞，直到队列中有空闲位置。
+
+```java
+public class BlockingQueueDemo {
+
+    public static BlockingQueue<String> blockingQueue = new ArrayBlockingQueue<>(5);
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+
+        Thread producter = new Thread(() -> {
+            String code = RandomStringUtils.randomNumeric(6);
+            try {
+                blockingQueue.put(code);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.print("producer(" + code + ")..");
+        });
+
+        Thread consumer = new Thread(() -> {
+            String take = null;
+            try {
+                take = blockingQueue.take();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.print("consumer(" + take + ")...");
+        });
+
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        executorService.execute(producter);
+        executorService.execute(producter);
+        executorService.execute(consumer);
+        executorService.execute(consumer);
+        executorService.execute(consumer);
+
+        executorService.shutdown();
+    }
+}
+```
+
+队列中没有元素时，消费者会等待生产者生产，阻塞在这里。
+
+```java
+Connected to the target VM, address: '127.0.0.1:0', transport: 'socket'
+consumer(569389)...producer(170545)..consumer(170545)...producer(569389)..
+```
+
+没有消费完，主线程还是正常结束
+
+```java
+Connected to the target VM, address: '127.0.0.1:0', transport: 'socket'
+consumer(692109)...consumer(884841)...producer(124762)..producer(884841)..producer(692109)..
+Disconnected from the target VM, address: '127.0.0.1:0', transport: 'socket'
+```
+
+### 常用的阻塞队列：
+
+1. **SynchronousQueue **:  同步移交队列，适用于非常大的或者无界的线程池，可以避免任务排队。SynchronousQueue 队列接收到任务后，会直接将任务从生产者移交给工作线程，这种移交机制高校。只有当线程池是无界的或者可以拒绝任务时，使用SynchronousQueue队列才有意义。要将一个元素放入SynchronousQueue，就需要有另一个线程才等待接收者这个元素，如果没有线程在等待，要么新建一个线程，要么拒绝掉。`newCachedThreadPool`默认使用的就是这种同步移交队列。吞吐量高约 LinkedBlockingQueue。
+2. **LinkedBlockingQueue**: 基于链表结构的阻塞队列，FIFO 原则排序。当任务提交过来时，如果线程数小于核心线程数则等待，大于的时候就进入工作队列进行等待。LinkedBlockingQueue队列没有最大值限制，只要任务数超过核心线程，都会被添加到队列中，这就会导致，总线程数永远不会超过核心线程数，所以这个时候 maximumPoolSize就没意义了。 `newFixedThreadPool`和`newSingleThreadPool`默认使用的是 无界的 LinkedBlockingQueue队列。吞吐量高于 ArrayBlockingQueue
+3. **ArrayBlockingQueue** : 基于数组结构的 有界阻塞队列，可以设置队列上限值，FIFO原则排序。当任务提交过来时，如果线程数小于核心线程数则等待；大于的时候就进入工作队列进行等待；如果队列也满了，则创建非核心线程执行任务；如果总线程达到了 maximumPoolSize，则根据饱和策略去拒绝。
+4. **DelayQueue** :  延迟队列，队列中的元素必须实现 Delayed 接口。当任务体骄傲时，入队列只有达到指定的延时时间，才会执行任务。
+5. **PriorityBlockingQueue**：优先级阻塞队列，根据优先级执行任务，优先级是通过自然排序或者是Comparator定义实现。
+
+
+
+
+
+## ForkJoin
+
+主要用于并行计算中，和MapReduce 原理类似，都是把大的计算任务拆分成多个小任务并行计算。
+
+```java
+public class ForkJoinDemo extends RecursiveTask<Integer> {
+
+    private final int threshold = 5;
+    private int first;
+    private int last;
+
+    public ForkJoinDemo(int first, int last) {
+        this.first = first;
+        this.last = last;
+    }
+
+    @Override
+    protected Integer compute() {
+        int result = 0;
+        if (last - first <= threshold) {
+            // 直接计算
+            for (int i = first; i <= last; i++) {
+                result += i;
+            }
+        } else {
+            // 拆分任务
+            int middle = first + (last - first) / 2;
+            ForkJoinDemo leftTask = new ForkJoinDemo(first, middle);
+            ForkJoinDemo rightTask = new ForkJoinDemo(middle + 1, last);
+            leftTask.fork();
+            rightTask.fork();
+            result = leftTask.join() + rightTask.join();
+        }
+        return result;
+    }
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        ForkJoinDemo forkJoinDemo = new ForkJoinDemo(1, 10000);
+        ForkJoinPool forkJoinPool = new ForkJoinPool();
+        ForkJoinTask<Integer> submit = forkJoinPool.submit(forkJoinDemo);
+        System.out.println(submit.get());
+    }
+}
+```
+
+ForkJoin 使用ForkJoinPool 来启动， 是一个特殊的线程池，线程数量取决于CPU核数
+
+```
+public class ForkJoinPool extends AbstractExecutorService
+```
+
+ForkJoinPool 实现了工作窃取算法（workSteal）来提高CPU 的利用率。每个线程都维护了一个双端队列，用来存储需要执行的任务。工作窃取算法，允许空闲的线程从其他线程的双端队列中窃取一个任务来执行。窃取的任务必须是最晚的任务，避免和队列所属线程发生竞争。
+
+
+
+# 九、线程不安全示例
+
+多个线程对同一个共享数据进行访问，而不采取同步操作的话，那么结果很容易出问题。
+
+```java
+public class ThreadUnsafeDemo {
+
+    public static class UnsafeIncrementDemo {
+        private int cnt = 0;
+
+        public void add() {
+            cnt++;
+        }
+        public int get() {
+            return cnt;
+        }
+    }
+
+    public static class SafeIncrementDemo {
+        private AtomicInteger cnt = new AtomicInteger(0);
+
+        public void add() {
+            cnt.incrementAndGet();
+        }
+        public int get() {
+            return cnt.get();
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        UnsafeIncrementDemo unsafeIncrementDemo = new UnsafeIncrementDemo();
+        SafeIncrementDemo safeIncrementDemo = new SafeIncrementDemo();
+        CountDownLatch countDownLatch = new CountDownLatch(1000);
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        for (int i = 0; i < 1000; i++) {
+            executorService.execute(() -> {
+                unsafeIncrementDemo.add();
+                safeIncrementDemo.add();
+                countDownLatch.countDown();
+            });
+        }
+        countDownLatch.await();
+        System.out.println("unsafeIncrementDemo:" + unsafeIncrementDemo.get());
+        System.out.println("safeIncrementDemo:" + safeIncrementDemo.get());
+        executorService.shutdown();
+    }
+}
+```
+
+```java
+unsafeIncrementDemo:986
+safeIncrementDemo:1000
+```
+
+
+
+# 十、Java 内存模型
+
+Java 内存模型，试图屏蔽各种硬件和操作系统的内存访问差异，以实现让Java程序在各个平台下都能达到一致的内存访问效果。
+
+## 主内存 和 工作内存
+
+处理上的寄存器比内存快了多个数量级，所以引入了高速缓存。由此引发了新的问题，缓存一致性。如果多个缓存共享同一块主内存区域，那么多个缓存数据可能会不一致，需要一些协议来解决问题。 
+
+开发中，所有的变量都存在主内存中，每个线程还有自己的工作内存，工作内存存储在高速缓存或者寄存器中，保存了该线程使用的变量的主内存副本拷贝。
+
+线程只能通过操作工作内存中的变量，不同线程见的变量值传递需要通过主内存。
+
+## 内存间的交互操作
+
+Java的内存中定义了8个操作，来完成工作内存和主内存之间的交互操作:
+
+* read : 把一个变量从主内存传输到工作内存中
+* load : 在read之后执行，把read得到的值放入工作内存的变量副本中。
+* use : 把工作内存中的一个变量的值传递给执行引擎
+* assign : 把一个从执行引擎接收到的值赋给工作内存的变量
+* store：把工作内存的一个变量的值传送到主内存中
+* write：在store之后执行，把store得到的值写放入主内存的变量中。
+* lock：作用于主内存的变量
+* unlock：同上
+
+## 内存模型三大特性
+
+### 1.原子性
+
+Java 内存模型保证了read、load、use、assign、store、write、lock和unlock操作具有原子性，例如对一个int变量执行assign赋值操作，这个操作就是原子性的。但是Java内存模型允许虚拟机将没有被volatile修饰的64位数据（long,double）的读写操作划分为两次32位的操作来进行，既load、store、read和write操作可以不具备原子性。
+
+### 2.可见性
+
+### 3.有序性
+
+## 先行先发原则
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

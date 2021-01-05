@@ -90,6 +90,100 @@ typeName functionName(paremeterList)
 
 ## 7.8 函数与array对象
 
+传递array 作为函数的参数
+
+[std::array](http://www.cplusplus.com/reference/array/array)
+
+有序、定长、线性存储
+
+有两个模板参数 ：  泛型、长度
+
+```c++
+void testArray() {
+    array<string, 4> arrays = {"af", "ewr", "gad"};
+
+    cout << "array.size : " << arrays.size() << endl;
+    cout << "array.max_size : " << arrays.max_size() << endl;
+    cout << "array.empty : " << arrays.empty() << endl;
+
+    arrays[3] = "adfaa";
+
+    for (int i = 0; i < arrays.size(); i++) {
+        cout << "array" << i << ": " << arrays.at(i) << endl;
+    }
+    cout << "array.size : " << arrays.size() << endl;
+    cout << "array.max_size : " << arrays.max_size() << endl;
+
+    for (auto iterator = arrays.begin(); iterator != arrays.end(); iterator++) {
+        cout << "array: " << *iterator << endl;
+    }
+
+    for (auto & array : arrays) {
+        cout << "array: " << array << endl;
+    }
+}
+result:
+array.size : 4
+array.max_size : 4
+array.empty : 0
+array0: af
+array1: ewr
+array2: gad
+array3: adfaa
+array.size : 4
+array.max_size : 4
+array: af
+array: ewr
+array: gad
+array: adfaa
+```
+
+
+
+
+
+## 7.9 递归
+
+介个就是递归！
+
+<iframe 
+src="//player.bilibili.com/player.html?aid=87819206&bvid=BV1K741147NA&cid=150040663&page=1" 
+scrolling="no" 
+border="10"
+frameborder="no"
+framespacing="10"
+allowfullscreen="true">
+</iframe>
+
+
+
+
+
+
+
+## 7.10 函数指针
+
+指向某个函数的指针
+
+这个我在学qt的时候，有一个，信号槽连接的地方，就可以先实现一个函数，然后连接的时候用函数指针指向这个函数。当然也可以直接用匿名函数，省略这个函数指针。不过拆开可以让代码更加易读。
+
+```c++
+
+double fun(int);
+double (*fun1)(int);
+
+fun1 = fun;
+
+```
+
+
+
+
+
+
+
+
+
 
 
 

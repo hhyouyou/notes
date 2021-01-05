@@ -33,10 +33,6 @@ boolean remove(Object o);
 void clear();
 ```
 
-
-
-
-
 ### Set
 
 * TreeSet : 基于红黑树实现，支持有序操作。查找的效率是 O(logN)

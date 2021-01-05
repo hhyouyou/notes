@@ -368,7 +368,7 @@ String s = lsa[0].get(0);
 反射可以提供运行时的类信息，并且这个类可以在运行时才加载进来，甚至在编译时期该类的.class	
 
 * Field :  读取修改字段
-* Method：invoke() 调用犯方法
+* Method：invoke() 调用方法
 * Constructor:  使用newInstance()创建新的对象
 
 优点： 可扩展、ide开发工具、调试

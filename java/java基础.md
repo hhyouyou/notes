@@ -18,6 +18,26 @@
 
 ### 1. Java 类初始化的顺序
 
+类加载的过程：加载、连接、初始化。
+
+加载的过程涉及到类加载器，`ClassLoader`。
+
+* `Bootstrap ClassLoader`：启动类加载器，`jvm`自带，c++ 编写，用来加载 `java`核心库`java.*`
+* `Extension ClassLoader`:  扩展类加载器，由`java`实现的 独立于`jvm`, 加载扩展库
+* `App ClassLoader`: 系统类加载器 java编写，加载程序所在的目录，如`user.dir`所在的位置的class
+* `CustomClassLoader`: 用户自定义类加载器,`java`编写,用户自定义的类加载器,可加载指定路径的`class`文件
+
+双亲委派？
+
+类加载的时候先让自己的父加载器加载，如果父找不到，一直往上查找，直到最顶层的 bootstrap ClassLoader，最顶层的父类还是找不到，那就 `ClassNotFoundException`了。
+
+作用：
+
+1. 防止重复加载
+2. 防止核心类被篡改
+
+
+
 **初始化一般遵循3个原则**：
 
 * 静态对象（变量）优先于非静态对象（变量）初始化，静态对象（变量）只初始化一次，而非静态对象（变量）可能会初始化多次
@@ -88,7 +108,7 @@ public static Integer valueOf(int i) {
 
 String被声明为`final`，因此无法被继承。
 
-Java8中，String内部是 char[]
+`Java8`中，String内部是 char[]
 
 ```java
 public final class String
@@ -99,7 +119,7 @@ public final class String
 }
 ```
 
-Java9中，String内部是 byte[]，同时使用`coder`来标识编码
+`Java9`中，String内部是 byte[]，同时使用`coder`来标识编码
 
 ```java
 public final class String
@@ -122,11 +142,10 @@ String为什么是不可变的：内部实现是被final修饰的数组，初始
 #### String，StringBuffer and StringBuilder
 
 1. String不可变，StringBuffer和StringBuilder可变
-   1. String线程安全，StringBuilder不是线程安全， StringBuffer是线程安全，内部使用 synchronized
-   
+2. String线程安全，StringBuilder不是线程安全， StringBuffer是线程安全，内部使用 synchronized
 #### String Pool
 
-字符串常量池中保存着所有字符串字面量，这些字面量实在编译时确定的。还可以使用String.intern()方法在运行时过程将字符串添加到String pool中。
+字符串常量池中保存着所有字符串字面量，这些字面量实在编译时确定的。还可以使用`String.intern()`方法在运行时过程将字符串添加到String pool中。
 
 在java7之前，String pool被放在运行时常量池内。在Java7， String pool被移动到堆中。
 

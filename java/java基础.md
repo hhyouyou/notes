@@ -147,7 +147,30 @@ String为什么是不可变的：内部实现是被final修饰的数组，初始
 
 字符串常量池中保存着所有字符串字面量，这些字面量实在编译时确定的。还可以使用`String.intern()`方法在运行时过程将字符串添加到String pool中。
 
-在java7之前，String pool被放在运行时常量池内。在Java7， String pool被移动到堆中。
+在`java7`之前，String pool被放在运行时常量池内。在`Java7`， String pool被移动到堆中。
+
+#### String hashCode
+
+```java
+
+/**
+* s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1]
+*/
+ public int hashCode() {
+        int h = hash;
+        if (h == 0 && value.length > 0) {
+            char val[] = value;
+
+            for (int i = 0; i < value.length; i++) {
+                h = 31 * h + val[i];
+            }
+            hash = h;
+        }
+        return h;
+    }
+```
+
+
 
 #### 参考文章
 

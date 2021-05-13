@@ -1,5 +1,78 @@
 ## 第一章   简单工厂
 
+工厂方法模式
+
+定义一个创建对象的接口,让子类来决定实例化哪个类,
+
+工厂方法是一个类的实例化延迟到其子类
+
+![工厂方法](http://image-djx.test.upcdn.net/md/notes/%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95.png)
+
+```java
+public interface Reader {// 抽象的reader
+    void reader();
+}
+// 一个具体的reader, 还可以有JpgReader,PngReader
+public class GifReader implements Reader {
+    @Override
+    public void reader() {
+        System.out.println(Thread.currentThread().getStackTrace()[0].getClassName());
+        System.out.println(Thread.currentThread().getStackTrace()[1].getClassName());
+    }
+}
+// 抽象工厂
+public interface ReaderFactory {
+    Reader getReader();
+}
+// 具体的工厂产出对应的产品
+public class GifReaderFactory implements ReaderFactory {
+    @Override
+    public Reader getReader() {
+        return new GifReader();
+    }
+}
+public class Test {
+    public static void main(String[] args) throws Exception {
+        ReaderFactory readerFactory = new GifReaderFactory();
+        Reader reader = readerFactory.getReader();
+        reader.reader();
+    }
+}
+```
+
+
+
+多个产品对应多个工厂,还可以继续做简化
+
+```java
+// 抽象工厂
+public abstract class AbstractReaderFactory<T> {
+    abstract Reader getReader(Class<T> c) throws Exception;
+}
+
+// 具体的工厂产出对应的产品
+public class AllReaderFactory extends AbstractReaderFactory {
+    @Override
+    Reader getReader(Class c) throws Exception {
+        return (Reader) Class.forName(c.getName()).newInstance();
+    }
+}
+public class Test {
+    public static void main(String[] args) throws Exception {
+        AllReaderFactory allReaderFactory = new AllReaderFactory();
+        Reader reader1 = allReaderFactory.getReader(GifReader.class);
+        reader1.reader();
+
+        Reader reader2 = allReaderFactory.getReader(JpgReader.class);
+        reader2.reader();
+    }
+}
+```
+
+
+
+
+
 
 
 ## 第二章   策略模式
@@ -218,3 +291,10 @@
 
 
 java.util.Timer
+
+
+
+## 参考文章
+
+1. [美团技术团队-设计模式在外卖营销业务中的实践](https://tech.meituan.com/2020/03/19/design-pattern-practice-in-marketing.html)
+

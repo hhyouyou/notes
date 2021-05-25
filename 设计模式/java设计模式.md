@@ -1,3 +1,7 @@
+[TOC]
+
+
+
 ## 第一章   简单工厂
 
 工厂方法模式
@@ -77,7 +81,100 @@ public class Test {
 
 ## 第二章   策略模式
 
-封装算法
+
+
+封装算法，把算法从业务中抽象出来。
+
+### 类图
+
+* strategy（InStockStrategy）接口定义一个算法接口， 让其实现类都实现具体的算法内容（inStock）。
+* InStockOrder 是具体使用到算法的类，其中的`inStock()`会调用策略中的实际`inStock()`。
+* 实际的业务（InStockService）中就可以根据, 入库类型来选择不同策略
+
+
+
+![策略模式](http://image-djx.test.upcdn.net/md/notes/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F.png)
+
+
+
+### 实现
+
+```java
+public interface InStockStrategy {
+    /**
+     *  入库
+     * @param inStockNumber 入库单号
+     * @param quantity 数量
+     */
+    void inStock(String inStockNumber, Integer quantity);
+}
+
+/**
+ * 采购入库
+ **/
+public class PurchaseInStock implements InStockStrategy {
+
+    @Override
+    public void inStock(String inStockNumber, Integer quantity) {
+        System.out.println(this.getClass().getName());
+    }
+}
+
+/**
+ * 退货入库
+ **/
+public class ReturnInStock implements InStockStrategy {
+    
+    @Override
+    public void inStock(String inStockNumber, Integer quantity) {
+        System.out.println(this.getClass().getName());
+    }
+}
+```
+
+
+
+```java
+public class InStockOrder {
+
+    private String stockNumber;
+    private Integer number;
+
+    private InStockStrategy inStockStrategy;
+
+    public void inStock() {
+        if (Objects.nonNull(inStockStrategy)) {
+            inStockStrategy.inStock(stockNumber, number);
+        }
+    }
+    
+    public void setInStockStrategy(InStockStrategy inStockStrategy) {
+        this.inStockStrategy = inStockStrategy;
+    }
+}
+```
+
+
+
+```java
+public class InStockService {
+
+    public static void main(String[] args) {
+        // 选取策略
+        PurchaseInStock purchaseInStock = new PurchaseInStock();
+
+        InStockOrder inStockOrder = new InStockOrder();
+        inStockOrder.setInStockStrategy(purchaseInStock);
+
+        // 入库
+        inStockOrder.inStock();
+    }
+}
+```
+
+
+
+
 
 ## 第三章   单一指责原则
 
@@ -168,7 +265,7 @@ public class Test {
 
 
 
-## 适配器模式
+## 第八章 适配器模式
 
 
 
@@ -184,7 +281,7 @@ public class Test {
 
 
 
-## 备忘录模式
+## 第九章 备忘录模式
 
 参考https://juejin.im/post/5bd12141f265da0ad82c4f71
 
@@ -204,7 +301,7 @@ public class Test {
 
 
 
-### 备忘录模式总结
+### 第十章 备忘录模式总结
 
 备忘录模式的**主要优点**如下：
 
@@ -238,13 +335,13 @@ public class Test {
 
 
 
-## 组合模式
+## 第十一章 组合模式
 
 
 
 
 
-## 迭代器模式
+## 第十二章 迭代器模式
 
 
 
@@ -276,7 +373,7 @@ public class Test {
 
 
 
-## 中介者模式
+## 第十三章 中介者模式
 
 [http://laijianfeng.org/2018/10/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F%E5%8F%8A%E5%85%B8%E5%9E%8B%E5%BA%94%E7%94%A8/](http://laijianfeng.org/2018/10/设计模式-中介者模式及典型应用/)
 

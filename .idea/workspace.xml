@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="79ee3ea1-c065-4d6a-bcfc-20e108dfb8e5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/MarkDown语法（简洁）.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/java/Iterator和Iterable的区别和联系.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/spring/spring validation.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/数据库/redis小册笔记.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/算法/heapSort.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/算法/mergeSort.md" afterDir="false" />
+    <list default="true" id="79ee3ea1-c065-4d6a-bcfc-20e108dfb8e5" name="Default Changelist" comment="feat: 修改目录结构">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/markdown-navigator-enh.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/markdown-navigator-enh.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/markdown-navigator.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/markdown-navigator.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/java基础.md" beforeDir="false" afterPath="$PROJECT_DIR$/java/java基础.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/java并发编程.md" beforeDir="false" afterPath="$PROJECT_DIR$/java/java并发编程.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/java设计模式.md" beforeDir="false" afterPath="$PROJECT_DIR$/java/设计模式/java设计模式.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/java/java集合框架.md" beforeDir="false" afterPath="$PROJECT_DIR$/java/java集合框架.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/java/单例.md" beforeDir="false" afterPath="$PROJECT_DIR$/java/设计模式/单例.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/数据库/数据库事务.md" beforeDir="false" afterPath="$PROJECT_DIR$/数据库/数据库事务.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/设计模式/java设计模式.md" beforeDir="false" afterPath="$PROJECT_DIR$/设计模式/java设计模式.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../patterns/src/main/java/com/example/patterns/strategy/InStockService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../patterns/src/main/java/com/example/patterns/strategy/InStockService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../patterns/src/main/java/com/example/patterns/strategy/PurchaseInStock.java" beforeDir="false" afterPath="$PROJECT_DIR$/../patterns/src/main/java/com/example/patterns/strategy/PurchaseInStock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../patterns/src/main/java/com/example/patterns/strategy/ReturnInStock.java" beforeDir="false" afterPath="$PROJECT_DIR$/../patterns/src/main/java/com/example/patterns/strategy/ReturnInStock.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,26 +38,25 @@
   <component name="ProjectViewState">
     <option name="abbreviatePackageNames" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="jdk.selected.JAVA_MODULE" value="1.8" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/java" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../patterns" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="project.structure.last.edited" value="Project" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="MarkdownNavigator.Settings.Preview" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\dongj\IdeaProjects\learn\notes\java\设计模式" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\dongj\IdeaProjects\learn\notes\java" />
       <recent name="C:\Users\dongj\IdeaProjects\learn\notes" />
@@ -62,6 +64,31 @@
       <recent name="C:\Users\dongj\IdeaProjects\learn\notes\spring" />
       <recent name="C:\Users\dongj\IdeaProjects\learn\notes\算法" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\dongj\IdeaProjects\learn\notes" />
+      <recent name="C:\Users\dongj\IdeaProjects\learn\notes\java" />
+      <recent name="C:\Users\dongj\IdeaProjects\learn\notes\java\设计模式" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PatternsApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="patterns" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.patterns.PatternsApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="ServiceViewManager">
     <option name="viewStates">
@@ -75,6 +102,7 @@
       </list>
     </option>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -91,7 +119,28 @@
       <workItem from="1594646142383" duration="1805000" />
       <workItem from="1594792940912" duration="5096000" />
       <workItem from="1594831363009" duration="30000" />
-      <workItem from="1594912335524" duration="8191000" />
+      <workItem from="1594912335524" duration="9035000" />
+      <workItem from="1595134777114" duration="1454000" />
+      <workItem from="1595346269824" duration="1289000" />
+      <workItem from="1595953426836" duration="106000" />
+      <workItem from="1596031989967" duration="722000" />
+      <workItem from="1596121087721" duration="970000" />
+      <workItem from="1596167188075" duration="752000" />
+      <workItem from="1596338073614" duration="1206000" />
+      <workItem from="1596555408252" duration="920000" />
+      <workItem from="1596988636154" duration="65000" />
+      <workItem from="1599486697621" duration="1538000" />
+      <workItem from="1600174476031" duration="1119000" />
+      <workItem from="1600504441448" duration="1347000" />
+      <workItem from="1601444244401" duration="1121000" />
+      <workItem from="1609689791875" duration="3288000" />
+      <workItem from="1611249965334" duration="866000" />
+      <workItem from="1617033955246" duration="1092000" />
+      <workItem from="1617719550074" duration="1652000" />
+      <workItem from="1621596822037" duration="159000" />
+      <workItem from="1621597009846" duration="798000" />
+      <workItem from="1621943780106" duration="2990000" />
+      <workItem from="1621950804926" duration="1028000" />
     </task>
     <task id="LOCAL-00001" summary="新增文件">
       <created>1594289002557</created>
@@ -128,60 +177,113 @@
       <option name="project" value="LOCAL" />
       <updated>1594831380149</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="feat：整理历史文档到本项目">
+      <created>1595002812940</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1595002812941</updated>
+    </task>
+    <task id="LOCAL-00007" summary="feat：新增java集合框架的笔记">
+      <created>1595953473620</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1595953473620</updated>
+    </task>
+    <task id="LOCAL-00008" summary="feat：新增笔记">
+      <created>1596988673405</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1596988673405</updated>
+    </task>
+    <task id="LOCAL-00009" summary="feat：新增笔记">
+      <created>1600175090658</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1600175090658</updated>
+    </task>
+    <task id="LOCAL-00010" summary="feat：新增笔记c++">
+      <created>1609690185712</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1609690185712</updated>
+    </task>
+    <task id="LOCAL-00011" summary="feat：新增笔记">
+      <created>1609864494893</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1609864494893</updated>
+    </task>
+    <task id="LOCAL-00012" summary="feat：新增笔记">
+      <created>1611250004381</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1611250004381</updated>
+    </task>
+    <task id="LOCAL-00013" summary="feat: 新增类加载的加载器&#10;优化部分格式，修改语病">
+      <created>1617034103889</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1617034103889</updated>
+    </task>
+    <task id="LOCAL-00014" summary="feat: 修改目录结构">
+      <created>1617720475376</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1617720475376</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="roots">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="新增文件" />
     <MESSAGE value="迁移历史文档" />
     <MESSAGE value="新增" />
     <MESSAGE value="feat：新增" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat：新增" />
+    <MESSAGE value="feat：整理历史文档到本项目" />
+    <MESSAGE value="feat：新增java集合框架的笔记" />
+    <MESSAGE value="feat：新增笔记c++" />
+    <MESSAGE value="feat：新增笔记" />
+    <MESSAGE value="feat: 新增类加载的加载器&#10;优化部分格式，修改语病" />
+    <MESSAGE value="feat: 修改目录结构" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 修改目录结构" />
   </component>
-  <component name="WindowStateProjectService">
-    <state x="372" y="109" key="CommitChangelistDialog2" timestamp="1594831379406">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="372" y="109" key="CommitChangelistDialog2/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594793075427" />
-    <state x="2385" y="137" key="CommitChangelistDialog2/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@1920.0.1920.1050" timestamp="1594305542389" />
-    <state x="372" y="109" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1594831379406" />
-    <state x="147" y="66" key="DiffContextDialog" timestamp="1594793068686">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="147" y="66" key="DiffContextDialog/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594793068686" />
-    <state x="549" y="172" key="FileChooserDialogImpl" timestamp="1594804845199">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="549" y="172" key="FileChooserDialogImpl/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594804845199" />
-    <state x="249" y="0" key="SettingsEditor" timestamp="1594915471528">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="249" y="0" key="SettingsEditor/0.0.1536.834@0.0.1536.834" timestamp="1594915471528" />
-    <state x="361" y="150" key="Vcs.Push.Dialog.v2" timestamp="1594831382066">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="361" y="150" key="Vcs.Push.Dialog.v2/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594793078023" />
-    <state x="2371" y="189" key="Vcs.Push.Dialog.v2/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@1920.0.1920.1050" timestamp="1594305545702" />
-    <state x="361" y="150" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1594831382066" />
-    <state x="562" y="334" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1594913008365">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="562" y="334" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594793051382" />
-    <state x="562" y="334" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1536.834@0.0.1536.834" timestamp="1594913008365" />
-    <state x="2524" y="262" key="git4idea.merge.GitPullDialog" timestamp="1594305511974">
-      <screen x="1920" y="0" width="1920" height="1050" />
-    </state>
-    <state x="483" y="208" key="git4idea.merge.GitPullDialog/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594290051557" />
-    <state x="2524" y="262" key="git4idea.merge.GitPullDialog/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@1920.0.1920.1050" timestamp="1594305511974" />
-    <state x="267" y="180" key="new project wizard" timestamp="1594804846470">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="267" y="180" key="new project wizard/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@0.0.1536.834" timestamp="1594804846470" />
-    <state x="2254" y="226" key="new project wizard/0.0.1536.834/1920.0.1920.1050/3840.19.1280.690/5120.19.1280.690@1920.0.1920.1050" timestamp="1594126384993" />
-    <state x="267" y="180" key="new project wizard/0.0.1536.834@0.0.1536.834" timestamp="1594137146005" />
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
   <component name="ideajad">
     <property name="annotate" value="false" />

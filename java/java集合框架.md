@@ -55,7 +55,6 @@ void clear();
 * HashMap：基于哈希表实现
 * Hashtable：和hashMap类似，但它是线程安全的。但是更应该是用ConcurrenthashMap, 效率更高，实现了分段锁
 * LinkedHashMap：使用双向链表来维护元素的顺序，顺序为插入顺序或者是做小使用顺序
-* LinkedHashMap
 
 # 二、容器中的设计模式
 

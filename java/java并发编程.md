@@ -3,6 +3,12 @@
 # 概述
 这章准备整理一下，java线程相关的东西
 
+## 进程与线程
+
+
+
+
+
 
 
 
@@ -17,7 +23,9 @@ Java中使用线程的三种方式：
 
 实现Runnable和Callable 接口的类只能当作一个可以在线程中运行的任务，不是真正意义上的线程，因此最后还需要通过 Thread 来调用。可以理解为任务是通过线程驱动从而执行的。
 
-## 继承 Thread 类
+## Thread类和Runnable 接口
+
+### 继承 Thread 类
 
 同样也需要实现 run() 方法， 因为 Thread 类也实现了 Runnable 接口。
 
@@ -28,12 +36,40 @@ Java中使用线程的三种方式：
      @Override
      public void run() {
          System.out.println(this.getClass().getName());
-         super.run();
      }
+ }
+ public static void main(String[] args) {
+     Thread thread1 = new Thread1();
+     thread1.start();
  }
 ```
 
-## 实现Runnable接口
+> 在调用了start()方法后，虚拟机会先为我们创建一个线程，然后等到这个线程第一次得到时间片时再调用run()方法。
+>
+> 注意: 不可多次调用start()方法。
+>
+> 在调用start()方法后，再次调用start()方法会抛出`IllegalThreadStateException`异常。
+
+#### Thread中的常用方法
+
+- currentThread()：静态方法，返回对当前正在执行的线程对象的引用
+- start()：开始执行线程的方法，java虚拟机会调用线程内的run()方法
+- yield()：yield在英语里有放弃的意思，同样，这里的yield()指的是当前线程愿意让出对当前处理器的占用。这里需要注意的是，就算当前线程调用了yield()方法，程序在调度的时候，也还有可能继续运行这个线程的
+- sleep()：静态方法，使当前线程睡眠一段时间
+- join()：使当前线程等待另一个线程执行完毕之后再继续执行，内部调用的是Object类的wait方法实现的
+
+
+
+### 实现Runnable接口
+
+Runnable 接口, 一个函数式接口
+
+```java
+@FunctionalInterface
+public interface Runnable {
+    public abstract void run();
+}
+```
 
 需要实现 Runnable 接口中的 run() 方法。
 
@@ -44,11 +80,39 @@ Java中使用线程的三种方式：
          System.out.println(this.getClass().getName());
      }
  }
+
+public static void main(String[] args) {
+    // 实现 Runnable
+    Thread thread2 = new Thread(new Thread2(), "thread2");
+    thread2.start();
+    // 匿名内部类实现Runnable接口
+    new Thread(() -> System.out.println("thread run....")).start();
+}   
 ```
 
-## 实现Callable接口
+### 实现Runnable接口  和  继承 Thread 类的对比
 
-和Runnable 相比，Callable 可以有返回值，返回值通过 FutureTask 进行封装。
+实现接口相对更好：
+
+* Java 支持单继承，多实现。实现接口更灵活. 
+* 继承整个 Thread类开销更大
+
+
+
+## Callable接口 以及 Future接口 和 FutureTask类
+
+### Callable接口
+
+Callable 接口, 和Runnable相比, 也是一个函数式接口, 不过call()方法拥有返回值, 同时支持范型
+
+```java
+@FunctionalInterface
+public interface Callable<V> {
+    V call() throws Exception;
+}
+```
+
+`Callable`一般是配合线程池工具`ExecutorService`来使用的。`ExecutorService`可以使用`submit`方法来让一个`Callable`接口执行。它会返回一个`Future`，可以通过这个`Future`的`get`方法得到结果。
 
 ```java
 public static class Thread3 implements Callable<String> {
@@ -57,39 +121,93 @@ public static class Thread3 implements Callable<String> {
         return this.getClass().getName();
     }
 }
+public static void main(String[] args) {
+    // 使用Executors 实现, 使用Future 获取 callable 返回值
+    ExecutorService executorService = Executors.newCachedThreadPool();
+    Future<String> submit = executorService.submit(new Thread3());
+    // submit.get 方法会阻塞当前线程，直到得到结果。
+    System.out.println(submit.get());
+    try {
+        // 所以 建议使用可以设置超时时间的重载get方法。
+        System.out.println(submit.get(10, TimeUnit.SECONDS));
+    } catch (TimeoutException e) {
+        // 超时处理
+        e.printStackTrace();
+    }
+}
 ```
 
-
-
-运行结果
+### Future 接口
 
 ```java
-  public static void main(String[] args) {
-      // 1.继承 Thread
-      Thread thread1 = new Thread(new Thread1(), "thread1");
-      thread1.start();
-      // 2.实现 Runnable
-      Thread thread2 = new Thread(new Thread2(), "thread2");
-      thread2.start();
-      // 3.实现 Callable
-      FutureTask<String> stringFutureTask = new FutureTask<>(new Thread3());
-      Thread thread3 = new Thread(stringFutureTask, "thread3");
-      thread3.start();
-      try {
-          String s = stringFutureTask.get();
-          System.out.println(s);
-      } catch (InterruptedException | ExecutionException e) {
-          e.printStackTrace();
-      }
-  }
+public interface Future<V> {
+    // '试图'取消一个线程的执行
+    boolean cancel(boolean mayInterruptIfRunning);
+    boolean isCancelled();
+    boolean isDone();
+    V get() throws InterruptedException, ExecutionException;
+    V get(long timeout, TimeUnit unit)
+        throws InterruptedException, ExecutionException, TimeoutException;
+}
+
 ```
 
-## 实现接口  和  继承 Thread 类的对比
+### FutureTask类
 
-实现接口相对更好：
+`Future`接口的一个实现类`FutureTask`。`FutureTask`是实现的`RunnableFuture`接口的，而`RunnableFuture`接口同时继承了`Runnable`接口和`Future`接口：
 
-* Java 支持单继承，多实现。实现接口更灵活
-* 继承整个 Thread类开销更大
+```java
+public interface RunnableFuture<V> extends Runnable, Future<V> {
+    void run();
+}
+```
+
+使用 FutureTask
+
+```java
+public static void main(String[] args) {
+    // 使用 FutureTask 获取 callable返回值
+    FutureTask<String> stringFutureTask = new FutureTask<>(new Thread3());
+    executorService.submit(stringFutureTask);
+    System.out.println(stringFutureTask.get());
+    // 使用 FutureTask 获取 实现Runnable线程 的返回值
+    FutureTask<String> stringFutureTask1 = new FutureTask<>(new Thread2(), "ok");
+    executorService.submit(stringFutureTask1);
+    System.out.println(stringFutureTask1.get());
+}
+```
+
+上面Callable示例中使用的 submit后返回的 `Future.get()` 获取返回值. 而这里使用的是 `FutureTask.get()` 获取返回值. 
+
+两处使用的 `executorService.submit()`也不一致. 
+
+```java
+// 一个是直接提交的Callable,  public static class Thread3 implements Callable<String> {}
+<T> Future<T> submit(Callable<T> task);
+// 一个是提交的FutureTask,  FutureTask实现 RunnableFuture接口继承的 Runnable
+Future<?> submit(Runnable task);
+```
+
+FutureTask的几种状态
+
+```java
+/**
+  *
+  * state可能的状态转变路径如下：
+  * NEW -> COMPLETING -> NORMAL
+  * NEW -> COMPLETING -> EXCEPTIONAL
+  * NEW -> CANCELLED
+  * NEW -> INTERRUPTING -> INTERRUPTED
+  */
+private volatile int state;
+private static final int NEW          = 0;
+private static final int COMPLETING   = 1;
+private static final int NORMAL       = 2;
+private static final int EXCEPTIONAL  = 3;
+private static final int CANCELLED    = 4;
+private static final int INTERRUPTING = 5;
+private static final int INTERRUPTED  = 6;
+```
 
 
 
@@ -222,7 +340,7 @@ sleep() 可能会抛出 InterruptedException, 因为异常不能跨线程传播�
 
 一个线程执行完毕之后会自动结束，如果在运行过程中发生异常，也会提前结束。
 
-## InterruptedEception
+## InterruptedException
 
 通过调用一个线程的 interrupt()来中断线程，如果该线程处于阻塞、限期等待或者无限期等待状态，那么就会抛出InterruptedException，从而提前结束该线程。但是不能中断I/O 阻塞和 synchronized 锁阻塞。
 
@@ -321,7 +439,7 @@ submit.cancel(true);
 
 # 四、互斥同步
 
-Java提供了两种锁机制来控制多个线程对共享资源的互斥访问，第一个是 JVM 实现的synchronized， 而另一个是 JDK 实现的 ReentrantLock 。
+Java提供了两种锁机制来控制多个线程对共享资源的互斥访问，第一个是 JVM 实现的synchronized， 而另一个是 JDK 实现的 可重入锁(ReentrantLock) 。
 
 ## synchronized
 
@@ -505,6 +623,8 @@ public static class ReentrantLockDemo {
 在线程中调用另外一个线程的join()方法， 会将当前线程挂起，而不是忙等待，直到目标线程结束。
 
 所以下面这个demo , 虽然b先启动，但是因为在 b线程中调用了a线程的join()方法，所以b线程会等a线程结束后才继续执行。
+
+> join() Thread类中的方法  内部是用 Object 的中的 wait()方法来实现的
 
 ```java
 public class JoinDemo {
@@ -1218,9 +1338,10 @@ J.U.C 包里面 的整数原子类AtomicInteger 的方法调用了Unsafe类的CA
 
 
 
+# 参考文章
 
-
-
+1. [深入浅出Java 多线程](http://concurrent.redspider.group)
+2. 
 
 
 

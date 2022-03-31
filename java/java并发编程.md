@@ -744,15 +744,21 @@ after
 
 ## 新建(NEW)
 
-创建后尚未启动
+创建后尚未启动, 指的是还没调用Thread实例的start()方法。
 
 ## 可运行（RUNABLE）
 
-正在Java虚拟机中运行。但是在操作系统层面，他可能处于运行状态，也可能等待资源调度（例如处理器资源），资源调度完成就 进入运行状态。所以该状态的可运行是指可以被运行，具体有没有运行要看底层操作系统的资源调度。
+正在Java虚拟机中运行。但是在操作系统层面，他可能处于运行状态，也可能等待CPU资源调度，资源调度完成就 进入运行状态。
+
+所以该状态的可运行是指可以被运行，具体有没有运行要看底层操作系统的资源调度。
+
+> Java线程的**RUNNABLE**状态其实是包括了传统操作系统线程的**ready**和**running**两个状态的。
 
 ## 阻塞（BLOCKED）
 
-请求获取 monitor lock 从而进入 synchronized 函数或者代码块，但是其他线程已经占用了该 monitor lock，所以处于阻塞状态。要结束该状态，从而进入 RUNABLE 需要其他线程释放 monitor lock。
+阻塞状态. 处于BLOCKED状态的线程正等待锁的释放以进入同步区。
+
+> 请求获取 monitor lock 从而进入 synchronized 函数或者代码块，但是其他线程已经占用了该 monitor lock，所以处于阻塞状态。要结束该状态，从而进入 RUNABLE 需要其他线程释放 monitor lock。
 
 ## 无限期等待（WAITING）
 
@@ -760,29 +766,29 @@ after
 
 阻塞和等待的区别在于，阻塞是被动的，被阻塞的线程是在等待获取 monitor lock。而等待是主动的，通过 Object.wait() 等方法进入。
 
-| 进入方法                                   | 退出方法                              |
-| ------------------------------------------ | ------------------------------------- |
-| 没有设置 Timeout 参数的 Object.wait() 方法 | Object.notify()  、Object.notifyAll() |
-| 没有设置 Timeout 参数的 Thread.join() 方法 | 等待被调用的线程执行完毕              |
-| LockSupport.park() 方法                    | LockSupport.unpark(Thread)            |
+| 进入方法                                                     | 退出方法                              |
+| ------------------------------------------------------------ | ------------------------------------- |
+| Object.wait() 使当前线程处于等待状态直到另一个线程唤醒它     | Object.notify()  、Object.notifyAll() |
+| Thread.join() 等待线程执行完毕，底层调用的是Object实例的wait方法 | 等待被调用的线程执行完毕              |
+| LockSupport.park() 除非获得调用许可，否则禁用当前线程进行线程调度 | LockSupport.unpark(Thread)            |
 
 ## 限期等待（TIMED_WAITING）
 
 无需等待其它线程显式地唤醒，在一定时间之后会被系统自动唤醒
 
-| **进入方法**                         | 退出方法                                      |
-| ------------------------------------ | --------------------------------------------- |
-| Thread.sleep() 方法                  | 时间结束                                      |
-| 设置Timeout参数的Object.wait()方法   | 时间结束、Object.notify()、Object.notifyAll() |
-| 设置了Timeout参数的Thread.join()方法 | 时间结束、被调用的线程执行完毕                |
-| LockSupport.parkNanos()方法          | LockSupport.unpark(Thread)                    |
-| LockSupport.parkUtil() 方法          | LockSupport.unpark(Thread)                    |
+| **进入方法**                                             | 退出方法                                      |
+| -------------------------------------------------------- | --------------------------------------------- |
+| Thread.sleep(long millis)：使当前线程睡眠指定时间        | 时间结束                                      |
+| Object.wait(long timeout)：线程休眠指定时间              | 时间结束、Object.notify()、Object.notifyAll() |
+| Thread.join(long millis)：等待当前线程最多执行millis毫秒 | 时间结束、被调用的线程执行完毕                |
+| LockSupport.parkNanos(long nanos)                        | LockSupport.unpark(Thread)                    |
+| LockSupport.parkUtil(long deadline)                      | LockSupport.unpark(Thread)                    |
 
 调用 Thread.sleep()方法使线程进入限期等待状态时，常用”使一个线程随眠“进行描述。调用Object.wait()方法使线程进入限期等待或者无限期等待时，常用”挂起一个线程“进行描述。睡眠和挂起是用来描述行为，而阻塞和等待用来描述状态。
 
 ## 死亡（TERMINATED）
 
-可以是线程结束任务之后自己结束，或者产生异常而结束
+终止状态。可以是线程结束任务之后自己结束，或者产生异常而结束
 
 
 
@@ -1322,6 +1328,16 @@ J.U.C 包里面 的整数原子类AtomicInteger 的方法调用了Unsafe类的CA
 
 
 
+# 十二、锁优化
+
+### 自旋锁
+
+### 锁消除
+
+### 锁粗化
+
+
+
 
 
 
@@ -1341,7 +1357,7 @@ J.U.C 包里面 的整数原子类AtomicInteger 的方法调用了Unsafe类的CA
 # 参考文章
 
 1. [深入浅出Java 多线程](http://concurrent.redspider.group)
-2. 
+2. [Java并发 之 线程组 ThreadGroup 介绍](https://juejin.cn/post/6844903811899719694)
 
 
 

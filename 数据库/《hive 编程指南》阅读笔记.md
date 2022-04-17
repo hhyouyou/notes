@@ -12,7 +12,96 @@
 
 
 
-## 第6章
+## 第5章 HiveQL：数据操作
+
+### 5.1 向管理表中装载数据
+
+如果分区不存在，这个命令会先创建分区目录，然后再复制数据到该目录下。
+
+```sql
+-- 从本地路径加载数据目录到表的指定分区
+load data local inpath '${env:HOME/data_file_path}'
+overwrite into table table_name
+partition (country = 'US', state = 'CA');
+```
+
+注：
+
+1. `local`关键字是从本地文件系统copy文件到hdfs中，
+
+​		如果没有`local`关键字，那就是从hdfs中移动文件。（分布式文件中不需要多份数据）
+
+2. `overwrite` 关键字保证目标文件夹中之前存在的数据会被删除
+
+   不用该关键字，会保留之前的文件，并且重命名之前的文件“文件名_序列号”
+
+3. 如果目标表时分区表，那么需要使用`partition`子句，而且还必须为分区指定value
+4. 对于`inpath`子句中使用的文件路径还有一个限制，即该路径下不可以包含任何文件夹
+5. Hive不会严重用户load的数据是否和表的模型是否匹配。但是，Hive会验证文件格式是否和表结构定义一致。
+
+### 5.2 通过查询语句向表中插入数据
+
+```sql
+insert overwrite table table_name partition (dt = '2022-04-16')
+select * from source_table where dt = '2022-04-16';
+```
+
+ps：`overwrite` 关键字，覆盖之前分区中的内容（`into` 关键字，会追加数据）
+
+#### 动态分区插入
+
+```sql
+insert overwrite table table_name partition (year, month, day)
+select ...., year, month, day from source_table;
+```
+
+Hive会根据select语句中的最后几列来确定分区字段 dt的值。
+
+混合使用动态和静态分区(**静态分区键必须出现在动态分区键之前**)：
+
+```sql
+insert overwrite table table_name partition (year = '2022', month, day)
+select ...., year, month, day from source_table;
+```
+
+> ps: 动态分区默认情况下是没开启的
+>
+> 猜测容易出错，如果查询结果错误，会导致一次创建过多分区，导致分区文件数量暴增
+
+### * 5.3 单个查询语句中创建并加载数据
+
+```sql
+create table table_name
+as 
+select os, os_version, os_name from source_table where dt = '2022-04-16';
+```
+
+一条语句完成创建表并将查询结果载入这个表的操作。
+
+> 这个功能常用于从一个大宽表中选取部分数据集
+>
+> 这个功能不能用于外部表。这个地方并没有进行数据的 '装载'，只是将元数据中指定一个指向数据的路径。？？？？？？？
+
+###  5.4 导出数据
+
+直接导出数据：
+
+```shell
+hadoop fs -cp source_path target_path
+```
+
+也可以查询数据到指定文件
+
+``` sql
+insert overwrite local directory '/tmp/target_table_name'
+select name, age, something from table_name where dt = '2022-04-16';
+```
+
+
+
+
+
+## 第6章 HiveQL：查询
 
 
 
@@ -85,6 +174,32 @@ Hive 支持常见的sql join语句，但是，**只支持等值连接**。
 左外连
 
 #### 6.4.4 outer join
+
+
+
+
+
+
+
+## 第 7 章 HiveQL：视图
+
+视图允许保存一个查询，并像对待表一样对这个查询进行操作。只是一个逻辑结构，并不会像表一样存储数据。
+
+### 7.1 使用视图来降低查询复制度
+
+当我们查询一个视图时， 这个视图所定义的查询语句会和我们我们的查询语句组合在一起，然后再提交hive查询。 从逻辑上，可以想象成，hive先执行这个视图，然后使用这个结果进行后续查询。（这么说，和superset中的dataset 不是一样？ 我们的chart是对dataset进行二次处理嘛）
+
+### 7.2  使用视图来限制基于条件过滤的数据
+
+视图已经筛选过一次，所以后面的查询只能基于视图查询来的结果进行筛选。
+
+
+
+### 7.3 动态分区中的视图和map类型
+
+
+
+
 
 
 

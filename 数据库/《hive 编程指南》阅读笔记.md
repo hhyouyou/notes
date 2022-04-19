@@ -197,6 +197,106 @@ Hive 支持常见的sql join语句，但是，**只支持等值连接**。
 
 ### 7.3 动态分区中的视图和map类型
 
+视图可以映射表中的 map字段。
+
+
+
+### 7.4 视图零零碎碎相关的事情
+
+1. hive会先解析视图，然后使用解析结果处理整个查询语句。eg：视图中使用了order by 或者limit语句
+
+2. 创建视图时，可以使用`if not exists ` 或 `comment` 等子句修饰，和表类似
+
+3. 视图的名称在表下唯一
+
+4. 删除和查询视图，都和操作表类似。eg：`drop view if extists view_name  `, ` show views `
+
+   
+
+
+
+## *第 8 章 HiveQL：索引
+
+为什么我们平时不使用索引？
+
+好的， 索引已经被移除！
+
+[wiki-index](https://cwiki.apache.org/confluence/display/Hive/IndexDev)
+
+### 8.1 创建索引
+
+```sql
+CREATE INDEX index_name
+ON TABLE base_table_name (col_name, ...)
+AS 'index.handler.class.name'
+[WITH DEFERRED REBUILD]
+[IDXPROPERTIES (property_name=property_value, ...)]
+[IN TABLE index_table_name]
+[PARTITIONED BY (col_name, ...)]
+[
+   [ ROW FORMAT ...] STORED AS ...
+   | STORED BY ...
+]
+[LOCATION hdfs_path]
+[TBLPROPERTIES (...)]
+[COMMENT "index comment"]
+```
+
+语句解释
+
+* partitioned by 如果省略，那么索引表的分区和原表一样。 也就是说，此处指定的分区可以和原表不一致
+* deferred（推迟），推迟重建索引。此处只是定义索引结构，不重建索引。
+* as后面的是指定索引的结构，可以自己实现，此处用的是hive的。
+* in table子句是在一张新表中保留索引数据
+
+### 8.2 重建索引
+
+```sql
+alter index something_index
+on table table_name(col) partition( dt = '2022-04-19')
+rebuild
+```
+
+
+
+### 8.3 显示索引
+
+```sql
+show formatted index on table_name;
+```
+
+
+
+### 8.4 删除索引
+
+```sql
+ drop index if exists index_name on table table_name;
+```
+
+删表会自动删除索引
+
+### 8.5 实现一个定制化索引处理器
+
+实现 `public interface HiveIndexHandler {}` 接口
+
+
+
+## 第 9 章 模式设计
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

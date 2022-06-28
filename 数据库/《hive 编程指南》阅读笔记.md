@@ -110,7 +110,7 @@ Hive中数据库的概念本质上仅仅是表的一个目录或者命名空间�
 
 
 
-## 第5章 HiveQL：数据操作
+## 第 5 章 HiveQL：数据操作
 
 ### 5.1 向管理表中装载数据
 
@@ -199,7 +199,7 @@ select name, age, something from table_name where dt = '2022-04-16';
 
 
 
-## 第6章 HiveQL：查询
+## 第 6 章 HiveQL：查询
 
 
 
@@ -380,6 +380,319 @@ show formatted index on table_name;
 
 
 ## 第 9 章 模式设计
+
+
+
+### 9.1 按天划分的表
+
+### 9.2 关于分区
+
+为什么要使用分区？
+
+
+
+分区适量，
+
+### 9.3  唯一键和标准化
+
+hive不同于关系型数据库没有唯一键，索引等，应尽量避免对非标准化数据进行连接join操作。
+
+可以使用hive的数据类型，array，map和struct
+
+### 9.4 同一份数据多种处理
+
+一次从一个数据源产生多个数据聚合
+
+```sql
+from table
+insert overwrite table_1 select * where action= '1'
+insert overwrite table_2 select * where action= '2';
+```
+
+### 9.5 对于每个表的分区
+
+在临时表中使用分区。
+
+etl的过程可能比较复杂，如果出问题了了，还能保留分区数据，不会被直接覆盖。
+
+### 9.6  分桶表数据存储
+
+分桶：将数据集分解成更容易管理的若干部分的另一个技术
+
+> 为什么要有？
+>
+> 分区可以隔离数据，优化查询。不过不是所有分区都可以形成合理的分区（实际业务场景多变，文件大小等问题）
+
+
+
+建表时需要指定分桶字段
+
+```sql
+create table weblog (user_id int, url string, ip string)
+partitioned by (dt string)
+clustered by (user_id) -- 分桶字段
+into 96 buckets; -- 分成几个
+```
+
+
+
+### 9.7 为表增加列
+
+```sql
+alter table table_name add columns(column_add string)
+```
+
+
+
+### 9.8 使用列存储表
+
+hive通常使用行式存储，不过也可以使用列式SerDe来以混合列式格式存储信息。
+
+
+
+#### 9.8.1 重复数据
+
+#### 9.8.2 多列
+
+如果列中有众多重复数据（状态、类型），或者有非常多的字段，是那么使用列式存储比较合适
+
+
+
+### 9.9 几乎总是使用压缩
+
+压缩可以使磁盘上存储的数据量变小，同时在查询的时候可以降低I/O来提高查询速度。
+
+压缩和解压缩会消耗cpu资源所以压缩不是越小越合适，也需要一定取舍。
+
+
+
+## 第 10 章 调优
+
+HiveQL式一种声明式语言， 用户提交查询语句后，hive会将其转化为MapReduce Job。 
+
+
+
+### 10.1 使用explain
+
+explain可以帮助我们学习如果将查询转化成MapReduce任务的
+
+
+
+### 10.2 explain extended
+
+加上 extended 可以输出有关计划的额外信息（物理信息，例如文件名等）
+
+
+
+### 10.3 限制调整
+
+通过修改配置， 使limit的时候，不走全表，对源数据进行抽样。
+
+但是这个真的合适吗？ 很多情况下，像排序sum啥的，会有问题吧。
+
+### 10.4 join 优化
+
+同 6.4.2
+
+ps: 大表放右边
+
+### 10.5 本地模式
+
+对于小数据集， 可以在执行过程中，临时启用本地模式
+
+``` sql
+set hive.exec.model.local.auto=true
+```
+
+
+
+### 10.6 并行执行
+
+同一个任务会被转化成多个阶段（map reduce阶段，合并阶段，limit阶段等）。默认情况下，一次只会执行一个阶段。不过有些job可能会包含多个阶段，而且这些阶段如果不是互相依赖的，那么可以并发执行，减少job的执行时间。
+
+
+
+通过开启 配置
+
+``` sql
+set hive.exec.parallel=true
+```
+
+
+
+### 10.7 严格模式
+
+hive.mapred.mode = strict
+
+限制的三种情况：
+
+1. where 条件不带分区， 直接扫描全表的
+2. 使用了order by 的必须带limit
+3. 限制笛卡尔积
+
+
+
+### 10.8 调整mapper 和reducer 个数
+
+如果设置过多会导致启动阶段以及调度运行时产生过多开销，而如果设置的过于保守，则可能无法充分利用集群内在的并行性。 
+
+
+
+hive是按照输入数据量大小来确定reducer 个数的，可以通过 dfs -count命令来计算输入量大小，计算指定目录下所有数据的大小。
+
+命令`hive.exec.reducers.bytes.per.reducer` 查看reducer大小（默认1G，生产是256mb）
+
+还有需要注意的是，实际文件数量，经过map之后，可能会有出入。
+
+
+
+`mapred.reduce.tasks` 设置reducer数量
+
+`hive.exec.reducers.max` 设置单个任务使用的最大reducer数量
+
+> 集群总 reduce槽位个数*1.5/ 执行中的查询的平均个数
+
+
+
+### 10.9 JVM重用
+
+`mapred.job.reuse.jvm.num.tasks` 设置一个jvm实例在同一个job中被重新使用多少次。
+
+
+
+### 10.10 索引
+
+没啥用
+
+
+
+### 10.11 动态分区调整
+
+一次创建多个分区，见5.2.1
+
+这个好用，但是如果一次创建分区过多容易出问题。 所以可以通过配置限制单次创建的分区数，来使用这个功能。
+
+
+
+### 10.12 推测执行
+
+在分布式集群环境下，因为程序Bug(包括Hadoop本身的bug)，负载不均衡或者资源分布不均等原因，会造成同一个作业的多个任务之间运行速度不一致，有些任务的运行速度可能明显慢于其他任务（比如一个作业的某个任务进度只有50%，而其他所有任务已经运行完毕），则这些任务会拖慢作业的整体执行进度。为了避免这种情况发生，Hadoop采用了推测执行（Speculative Execution）机制，它根据一定的法则推测出“拖后腿”的任务，并为这样的任务启动一个备份任务，让该任务与原始任务同时处理同一份数据，并最终选用最先成功运行完成任务的计算结果作为最终结果。
+
+
+
+### 10.13 单个MapReduce 中多个Group By
+
+配置项 ： `hive.multigroupby.singlemr`
+
+
+
+### 10.14 虚拟列
+
+hive有两种虚拟列
+
+1. `INPUT_FILE_NAME`  输入文件名，标记着mr任务的map task的输入数据中每条记录的来源（即这些输入数据存储路径，它是属于哪个目录下的哪个文件的）。
+2. `BLOCK_OFFSET_INSIDE_FILE` 记录在文件中的偏移量，一个表中有多条记录，而这个`BLOCK_OFFSET_INSIDE_FILE`就是计算表中每条记录相对于表中第一条记录的第一个字符的字节偏移量（因为一个字符的大小就是一个字节，所以也可以说是字符个数偏移量）。但对于分区表而言，是每个分区中的每条记录相对于该分区中的第一条记录的第一个字符的字节偏移量，而不是相对于整张表的第一条记录的第一个字符的了
+
+
+
+
+
+## 第 11 章  其他文件格式和压缩方法
+
+hive的一个独特功能就是： hive不会强制要求将数据转换成特定格式才能使用。hive可以利hadoop的InputFormat API从不同过的数据源读取数据，同样的，也可以使用 OutputFormat API 将数据写成不同格式。
+
+
+
+### 11.1 确定安装编解码器
+
+查看属性`io.compression.codecs`， 支持的编解码器
+
+### 11.2 选择一种压缩编/解码器
+
+取舍：
+
+* 压缩减少磁盘空间，减小磁盘和网络I/O操作。
+
+* 压缩和解压缩增加cpu开销
+
+| 压缩格式 | 工具  | 算法    | 文件扩展名 | 是否可切分 | 对应的编码/解码器                          |
+| -------- | ----- | ------- | ---------- | ---------- | ------------------------------------------ |
+| DEFAULT  | 无    | DEFAULT | .deflate   | 否         | org.apache.hadoop.io.compress.DefaultCodec |
+| Gzip     | gzip  | DEFAULT | .gz        | 否         | org.apache.hadoop.io.compress.GzipCodec    |
+| bzip2    | bzip2 | bzip2   | .bz2       | 是         | org.apache.hadoop.io.compress.BZip2Codec   |
+| LZO      | lzop  | LZO     | .lzo       | 否         | com.hadoop.compression.lzo.LzopCodec       |
+| LZ4      | 无    | LZ4     | .lz4       | 否         | org.apache.hadoop.io.compress.Lz4Codec     |
+| Snappy   | 无    | Snappy  | .snappy    | 否         | org.apache.hadoop.io.compress.SnappyCodec  |
+
+
+
+
+
+### 11.3 开启中间压缩
+
+对中间数据进行压缩，可以减少job中的map和reduce task间的数据传输量。
+
+1. 开启hive中间传输数据压缩功能
+
+```javascript
+set hive.exec.compress.intermediate=true;
+```
+
+复制
+
+2. 开启mapreduce中map输出压缩功能
+
+```javascript
+set mapreduce.map.output.compress=true;
+```
+
+复制
+
+3. 设置mapreduce中map输出数据的压缩方式
+
+```javascript
+set mapreduce.map.output.compress.codec= org.apache.hadoop.io.compress.Snap
+```
+
+
+
+### 11.4 最终输出结果压缩
+
+
+
+1. 开启hive最终输出数据压缩功能
+
+```javascript
+set hive.exec.compress.output=true;
+```
+
+2. 开启mapreduce最终输出数据压缩
+
+```javascript
+set mapreduce.output.fileoutputformat.compress=true;
+```
+
+3. 设置mapreduce最终数据输出压缩方式
+
+```javascript
+set mapreduce.output.fileoutputformat.compress.codec = org.apache.hadoop.io.compress.SnappyCodec;
+```
+
+4. 设置mapreduce最终数据输出压缩为块压缩
+
+```javascript
+set mapreduce.output.fileoutputformat.compress.type=BLOCK;
+```
+
+
+
+
+
+
+
+
+
+
 
 
 

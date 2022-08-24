@@ -170,11 +170,11 @@ public interface RunnableFuture<V> extends Runnable, Future<V> {
 
 ```java
 public static void main(String[] args) {
-    // 使用 FutureTask 获取 callable返回值
+    // 使用 FutureTask 获取 callable返回值   public FutureTask(Callable<V> callable);
     FutureTask<String> stringFutureTask = new FutureTask<>(new Thread3());
     executorService.submit(stringFutureTask);
     System.out.println(stringFutureTask.get());
-    // 使用 FutureTask 获取 实现Runnable线程 的返回值
+    // 使用 FutureTask 获取 实现Runnable线程 的返回值   public FutureTask(Runnable runnable, V result);
     FutureTask<String> stringFutureTask1 = new FutureTask<>(new Thread2(), "ok");
     executorService.submit(stringFutureTask1);
     System.out.println(stringFutureTask1.get());

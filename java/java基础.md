@@ -22,14 +22,16 @@
 
 加载的过程涉及到类加载器，`ClassLoader`。
 
-* `Bootstrap ClassLoader`：启动类加载器，`jvm`自带，c++ 编写，用来加载 `java`核心库`java.*`
-* `Extension ClassLoader`:  扩展类加载器，由`java`实现的 独立于`jvm`, 加载扩展库
-* `App ClassLoader`: 系统类加载器 java编写，加载程序所在的目录，如`user.dir`所在的位置的class
+* `Bootstrap ClassLoader`：启动类加载器，`jvm`自带，`c++` 编写，用来加载 `java`核心库`java.*`
+* `Extension ClassLoader`:  扩展类加载器，由`java`实现的 独立于`jvm`, 加载扩展库 `javax.*`
+* `App ClassLoader`: 系统类加载器 `java`编写，加载程序所在的目录，如`user.dir`所在的位置的class
 * `CustomClassLoader`: 用户自定义类加载器,`java`编写,用户自定义的类加载器,可加载指定路径的`class`文件
 
 双亲委派？
 
 类加载的时候先让自己的父加载器加载，如果父找不到，一直往上查找，直到最顶层的 bootstrap ClassLoader，最顶层的父类还是找不到，那就 `ClassNotFoundException`了。
+
+然后再由自己加载
 
 作用：
 
@@ -145,7 +147,7 @@ String为什么是不可变的：内部实现是被final修饰的数组，初始
 2. String线程安全，StringBuilder不是线程安全， StringBuffer是线程安全，内部使用 synchronized
 #### String Pool
 
-字符串常量池中保存着所有字符串字面量，这些字面量实在编译时确定的。还可以使用`String.intern()`方法在运行时过程将字符串添加到String pool中。
+字符串常量池中保存着所有字符串字面量，这些字面量是在编译时确定的。还可以使用`String.intern()`方法在运行时过程将字符串添加到String pool中。
 
 在`java7`之前，String pool被放在运行时常量池内。在`Java7`， String pool被移动到堆中。
 

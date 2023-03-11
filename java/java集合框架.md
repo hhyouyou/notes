@@ -43,7 +43,7 @@ void clear();
 ### List
 * ArrayList : 基于动态数组实现，支持随机访问。
 * LinkedList：基于双向链表实现，只能顺序访问，但是可以快速的在链表中间插入和删除元素。LinkedList还可以用作栈、队列、和双向队列。
-* Vector： 和ArrayList 类似，单他是线程安全的。
+* Vector： 和ArrayList 类似，但他是线程安全的。
 
 ### Queue
 

@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="79ee3ea1-c065-4d6a-bcfc-20e108dfb8e5" name="Default Changelist" comment="feat: update">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="79ee3ea1-c065-4d6a-bcfc-20e108dfb8e5" name="Default Changelist" comment="feat: add new note">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/大数据/面试题.md" beforeDir="false" afterPath="$PROJECT_DIR$/大数据/面试题.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -148,6 +148,7 @@
       <workItem from="1667401426093" duration="60000" />
       <workItem from="1667401495994" duration="248000" />
       <workItem from="1676208285359" duration="771000" />
+      <workItem from="1678347414010" duration="1277000" />
     </task>
     <task id="LOCAL-00001" summary="新增文件">
       <created>1594289002557</created>
@@ -289,7 +290,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661366199709</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="feat: add new note">
+      <created>1678347493845</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1678347493845</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -332,7 +340,8 @@
     <MESSAGE value="feat： 索引" />
     <MESSAGE value="feat: hive" />
     <MESSAGE value="feat: update" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: update" />
+    <MESSAGE value="feat: add new note" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add new note" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

@@ -2,9 +2,21 @@
 
 
 
-## 第一章   简单工厂
+## 第一章   工厂模式
 
-工厂方法模式
+
+
+### 简单工厂
+
+一个工厂类，创建多个不同产品
+
+
+
+### 工厂方法模式
+
+一个产品对应一个工厂
+
+
 
 定义一个创建对象的接口,让子类来决定实例化哪个类,
 
@@ -44,7 +56,7 @@ public class Test {
 }
 ```
 
-
+工厂方法+反射
 
 多个产品对应多个工厂,还可以继续做简化
 
@@ -73,6 +85,10 @@ public class Test {
 }
 ```
 
+#### 抽象工厂
+
+一个工厂对应一个产品族
+
 
 
 
@@ -80,8 +96,6 @@ public class Test {
 
 
 ## 第二章   策略模式
-
-
 
 封装算法，把算法从业务中抽象出来。
 
@@ -198,9 +212,39 @@ public class InStockService {
 
 #### 使用到的地方
 
-1.  Spring中BeanDefinitionDecorator
-2.  commons-collections包中ListUtils
-3.  scheduleThreadPool 装饰任务
+1.  Spring中`BeanDefinitionDecorator`: 
+2.  commons-collections包中`ListUtils`， 将list装饰成不同功能的list
+
+```java
+public static List synchronizedList(List list) {
+    return SynchronizedList.decorate(list);
+}
+
+public static List unmodifiableList(List list) {
+    return UnmodifiableList.decorate(list);
+}
+
+public static List predicatedList(List list, Predicate predicate) {
+    return PredicatedList.decorate(list, predicate);
+}
+
+public static List typedList(List list, Class type) {
+    return TypedList.decorate(list, type);
+}
+
+public static List transformedList(List list, Transformer transformer) {
+    return TransformedList.decorate(list, transformer);
+}
+
+public static List lazyList(List list, Factory factory) {
+    return LazyList.decorate(list, factory);
+}
+public static List fixedSizeList(List list) {
+    return FixedSizeList.decorate(list);
+}
+```
+
+3. `scheduledThreadPool `装饰任务
 
 
 
@@ -230,7 +274,17 @@ public class InStockService {
 
 还需要操作人信息？加上操作人信息
 
-唉好像思路不对
+> 基础对象，Product 接口
+>
+> Product getProductInfo();
+>
+> Product getProductSimpleInfo();
+>
+> Product getProductAndUserInfo();
+>
+> Product getProdctMoreInfo()
+
+根据不同需求，给商品这个接口，装载上不同的信息，防止信息
 
 
 
@@ -253,13 +307,143 @@ public class InStockService {
  #### 应用场景
 
 1. 远程代理 ：为一个对象在不同的地址空间提供局部代表。这样可以隐藏一个对象存在于不同地址空间的事实
-2. 虚拟代理 ：根据需要创建开销很道德对象。通过它来存放实例化需要很长时间的真实对象
+2. 虚拟代理 ：根据需要创建开销很大的对象。通过它来存放实例化需要很长时间的真实对象
 3. 安全代理 ：安全代理，用来控制真实对象访问时的权限
 4. 智能指引 ： 是指当调用真实对象时，代理处理另外一些事
 
 
 
+#### 静态代理
 
+讲代理比较经典的就是，Java中访问数据库，使用代理service进行，事务的开启关闭回滚
+
+静态代理，就是新建一个代理类，在执行目标类方法前后进行其他处理。
+
+```java
+public interface UserService {
+    void addUser();
+    void updateUser(String username);
+    void deleteUser(String username);
+}
+
+public class UserServiceImpl implements UserService {
+    @Override
+    public void addUser() {
+        System.out.println("新增一个用户");
+    }
+    @Override
+    public void updateUser(String username) {
+        System.out.println("更新用户：" + username + " 信息");
+    }
+    @Override
+    public void deleteUser(String username) {
+        System.out.println("删除用户：" + username);
+    }
+}
+
+public class UserServiceTransactionImpl implements UserService {
+    private final UserServiceImpl userServiceImpl;
+    private final TransactionalImpl transactional = new TransactionalImpl();
+    public UserServiceTransactionImpl(UserServiceImpl userServiceImpl) {
+        this.userServiceImpl = userServiceImpl;
+    }
+    @Override
+    public void addUser() {
+        transactional.open();
+        try {
+            userServiceImpl.addUser();
+            transactional.commit();
+        } catch (Exception e) {
+            transactional.rollback();
+        }
+    }
+    @Override
+    public void updateUser(String username) {
+        transactional.open();
+        try {
+            userServiceImpl.updateUser(username);
+            transactional.commit();
+        } catch (Exception e) {
+            transactional.rollback();
+        }
+    }
+
+    @Override
+    public void deleteUser(String username) {
+        transactional.open();
+        try {
+            userServiceImpl.deleteUser(username);
+            transactional.commit();
+        } catch (Exception e) {
+            transactional.rollback();
+        }
+
+    }
+public class Test {
+    public static void main(String[] args) {
+        UserServiceImpl userService = new UserServiceImpl();
+        UserServiceTransactionImpl userServiceProxy = new UserServiceTransactionImpl(userService);
+        userServiceProxy.addUser();
+        userServiceProxy.updateUser("user1");
+        userServiceProxy.deleteUser("user1");
+    }
+    
+}
+```
+
+
+
+#### 动态代理
+
+动态的新建一个类，然后再目标类方法前后进行其他处理。
+
+1. 基于`cglib`
+2. 基于`jdk`
+
+```java
+public class CglibDemo {
+
+    public static void main(String[] args) {
+        Enhancer enhancer = new Enhancer();
+        TransactionalImpl transactional = new TransactionalImpl();
+        enhancer.setSuperclass(UserServiceImpl.class);
+        MethodInterceptor methodInterceptor = (o, method, objects, methodProxy) -> {
+            System.out.println("原方法名是 ： " + method.getName());
+            System.out.println("原方法声明的类为 " + method.getDeclaringClass());
+
+            // TODO如果注解中有 @Transactional 的就进行，干嘛干嘛。。。。。
+            Annotation[] annotations = method.getAnnotations();
+            transactional.open();
+            Object o1 = methodProxy.invokeSuper(o, objects);
+            transactional.commit();
+            return o1;
+        };
+        enhancer.setCallback(methodInterceptor);
+        UserServiceImpl userService = (UserServiceImpl) enhancer.create();
+        userService.addUser();
+        userService.updateUser("user1");
+        userService.deleteUser("user1");
+    }
+}
+
+public class JDKProxyDemo {
+    public static void main(String[] args) {
+        TransactionalImpl transactional = new TransactionalImpl();
+        UserServiceImpl userService = new UserServiceImpl();
+        UserService userServiceProxy = (UserService) Proxy.newProxyInstance(UserService.class.getClassLoader(), new Class[]{UserService.class}, (proxy, method, args1) -> {
+            // 注解中有 @Transactional 的进行开启
+            Annotation[] annotations = method.getAnnotations();
+            transactional.open();
+            Object result = method.invoke(userService, args1);
+            transactional.commit();
+            return result;
+        });
+        userServiceProxy.addUser();
+        userServiceProxy.updateUser("user1");
+        userServiceProxy.deleteUser("user1");
+    }
+}
+```
 
 
 

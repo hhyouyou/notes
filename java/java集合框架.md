@@ -91,6 +91,10 @@ java.util.Arrays#asList() 可以把数组类型转换为 List 类型。
 public static <T> List<T> asList(T... a)
 ```
 
+将数组转为List, 让数组可以适配List中的方法。
+
+
+
 
 
 # 三、源码分析
@@ -370,6 +374,7 @@ transient Node<K,V>[] table;
                         tabNode.next = newNode(hash, key, value, null);
                         // -1 for 1st  这里面就是大于 TREEIFY_THRESHOLD = 8 转换为树了
                         if (binCount >= TREEIFY_THRESHOLD - 1) {
+                            // 见下文链表树化
                             treeifyBin(tab, hash);
                         }
                         break;
@@ -452,7 +457,7 @@ final Node<K, V>[] resize() {
                     // 元素不为空，扩容时需要处理
                     if (node.next != null) {
                         if (node instanceof TreeNode) {
-                            // 如果是树节点，由这哥split来处理
+                            // 如果是树节点，由这个split来处理
                             ((TreeNode<K, V>) node).split(this, newTab, j, oldCap);
                         } else { // preserve order
                             // 是链表这边处理
@@ -505,13 +510,77 @@ final Node<K, V>[] resize() {
 
 
 
+### 4. 链表树化
+
+在上面put操作中，如果链表添加节点时，节点数大于8，那么就会进入链表树化的方法。
+
+> 但是不是说，进入这个方法就一定会进行红黑树的转换。 此处还需要判断，桶的大小<64? 扩容：树化
+
+
+
+```java
+final void treeifyBin(Node<K, V>[] tab, int hash) {
+    int tabLength, index;
+    Node<K, V> e;
+    // 进行树化之前，需要判断，桶的大小是否小于 64。先扩容到64，之后才
+    if (tab == null || (tabLength = tab.length) < MIN_TREEIFY_CAPACITY) {
+        resize();
+    } else if ((e = tab[index = (tabLength - 1) & hash]) != null) {
+        TreeNode<K, V> head = null, tail = null;
+        do {
+            // 将节点转换为树节点，但还不是红黑树
+            TreeNode<K, V> p = replacementTreeNode(e, null);
+            if (tail == null) {
+                head = p;
+            } else {
+                p.prev = tail;
+                tail.next = p;
+            }
+            tail = p;
+        } while ((e = e.next) != null);
+        if ((tab[index] = head) != null) {
+            // 转红黑树
+            head.treeify(tab);
+        }
+    }
+}
+```
+
+上面这个方法比较简单，只是把普通过的`Node`节点转换成 `TreeNode`节点。真正的红黑树转换还在下面：
+
+
+
+```java
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## ConcurrentHashMap
 
 1.7 中使用的是 分段锁Segment 继承自 重入锁ReentrantLock。
 
 1.8 中使用的是CAS操作来支持更高的并发度，在 CAS 操作失败时使用内置锁 synchronized。
 
-TODO 
+
+
+CAS(compare and swap )， 比较并交换， 故名思意。在进行修改值的操作时，会比较旧值。
+
+比如**”线程1“**将key` a =1` 修改成 `a=2`, 那么会进行原子操作比较，是不1改成2，如果是，则修改成功。
+
+如果此时有**“线程2”**率先修改成功让`a=3`, 那么**”线程1“**将无法让`a=2`
 
 
 

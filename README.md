@@ -1,7 +1,7 @@
 # notes
 学习笔记
 
-
+```
 │  dBoxPlan.md
 │  groovy脚本：一键表-POJO类.md
 │  MarkDown语法（简洁）.md
@@ -60,6 +60,7 @@
         java设计模式.md
         单例.md
 
+```
 
 # 注：
 本项目主要用于个人学习。

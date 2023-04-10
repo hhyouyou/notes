@@ -126,47 +126,6 @@ FROM table1
 
 
 
-## 窗口函数问题
-
-窗口函数问题：在进行分析型计算时，可能需要使用窗口函数来实现一些类似于排序、分组、聚合的操作。常见的窗口函数有：
-
-- ROW_NUMBER: 对每行数据进行编号。
-- RANK: 计算每行数据在排序结果中的排名。
-- DENSE_RANK: 计算每行数据在排序结果中的排名，排名相同的数据得到相同的排名。
-- FIRST_VALUE: 返回分组中第一个值。
-- LAST_VALUE: 返回分组中最后一个值。
-- LEAD: 返回当前行之后的指定行数的值。
-- LAG: 返回当前行之前的指定行数的值。
-- SUM: 对指定列进行求和。
-- AVG: 对指定列进行求平均值。
-
-例如：
-
-```hive
-SELECT col1, col2, col3, ROW_NUMBER() OVER (PARTITION BY col1 ORDER BY col3 DESC) as row_num
-FROM table1
-```
-
-1. NULL处理问题：在处理数据时，经常需要考虑NULL值的情况。可以使用如下函数来解决NULL处理问题：
-
-- IFNULL: 如果第一个参数为NULL，则返回第二个参数，否则返回第一个参数。
-- COALESCE: 返回参数列表中第一个非NULL值。
-
-例如：
-
-```hive
-SELECT IFNULL(col1, col2), COALESCE(col1, col2, col3)
-FROM table1
-```
-
-
-
-
-
-
-
-
-
 ## 分区问题
 
 分区问题：在Hive中，分区是一种在表中分割数据的方法。可以使用如下语句来创建分区表：

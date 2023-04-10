@@ -223,13 +223,11 @@ RDD—— Resillient Distributed Dataset 叫做弹性分布式数据集，是Spa
 
 ### 执行原理
 
-从 
 
 
 
 
-
-### 基础编程
+### 基础编程-RDD
 
 #### RDD的创建方式四种：
 
@@ -269,15 +267,19 @@ sparkContext.stop()
 | **union(otherDataset)**                             | 对源RDD和参数RDD求并集后返回一个新的RDD                      |
 | **intersection(otherDataset)**                      | 对源RDD和参数RDD求交集后返回一个新的RDD                      |
 | **subtract(otherDataset)**                          | 对源RDD和参数RDD求差集后返回一个新的RDD                      |
+| **zip(otherDataset)**                               | 将两个RDD中的元素，以键值对的形式进行合并                    |
 | **distinct([numTasks]))**                           | 对源RDD进行去重后返回一个新的RDD                             |
 | **groupByKey([numTasks])**                          | 在一个(K,V)的RDD上调用，返回一个(K, Iterator[V])的RDD        |
 | **reduceByKey(func, [numTasks])**                   | 在一个(K,V)的RDD上调用，返回一个(K,V)的RDD，使用指定的reduce函数，将相同key的值聚合到一起，与groupByKey类似，reduce任务的个数可以通过第二个可选的参数来设置 |
+| **aggreateByKey(zeroValue)(seqOp,combOp)**          | 聚合操作，第一个参数是初始值，第二个参数中的第一个是分区内计算函数，第二个是分区间函数 |
+| **foldByKey(zeroValue)(func)**                      | 当分区内计算规则和分区间计算规则相同时，aggregateByKey 就可以简化为 foldByKey |
+| **combineByKey(create,mergeVal,mergeCom)**          | 三个参数含义：第一个数据处理，分区内数据处理，分区间数据处理 |
 | **sortByKey([ascending], [numTasks])**              | 在一个(K,V)的RDD上调用，K必须实现Ordered接口，返回一个按照key进行排序的(K,V)的RDD |
 | **sortBy(func,[ascending], [numTasks])**            | 与sortByKey类似，但是更灵活                                  |
 | **join(otherDataset, [numTasks])**                  | 在类型为(K,V)和(K,W)的RDD上调用，返回一个相同key对应的所有元素对在一起的(K,(V,W))的RDD |
-| **cogroup(otherDataset, [numTasks])**               | 在类型为(K,V)和(K,W)的RDD上调用，返回一个(K,(Iterable,Iterable))类型的RDD |
-| **coalesce(numPartitions)**                         | 减少 RDD 的分区数到指定值。                                  |
-| **repartition(numPartitions)**                      | 重新给 RDD 分区                                              |
+| **cogroup(otherDataset, [numTasks])**               | connect group : 在类型为(K,V)和(K,W)的RDD上调用，返回一个(K,(Iterable,Iterable))类型的RDD |
+| **coalesce(numPartitions，shuffle=false)**          | 减少 RDD 的分区数到指定值。分区合并。tips:可能会导致数据倾斜。 |
+| **repartition(numPartitions)**                      | 重新给 RDD 分区。就是coalesce(numPartitions, shuffle = true) |
 | **repartitionAndSortWithinPartitions(partitioner)** | 重新给 RDD 分区，并且每个分区内以记录的 key 排序             |
 
 
@@ -373,9 +375,74 @@ RDD 任务切分中间分为：Application、Job、Stage 和 Task
 
 **RDD Cache 缓存**
 
+将中间结果临时缓存。如果作业执行完毕，临时文件会被清除。
+
+RDD通过Cache或者Persist方法将前面计算结果缓存，默认情况下会把数据缓存再JVM的堆内存中。但是并不是这两个方法被调用时立即缓存的，而是触发后面的action算子时，该RDD将会被缓存再计算节点的内存中，并供后面重用。
+
+* cache 底层还是调用的persist方法，只是存储级别不同
+
+* cache: 将数据临时存储在内存中进行数据重用
+* persist: 将数据临时存储在磁盘文件中，涉及磁盘IO,性能较低，数据安全
+
+```scala
+/**
+* Persist this RDD with the default storage level (`MEMORY_ONLY`).
+*/
+def persist(): this.type = persist(StorageLevel.MEMORY_ONLY)
+
+/**
+* Persist this RDD with the default storage level (`MEMORY_ONLY`).
+*/
+def cache(): this.type = persist()
+```
+
+| 级别                | 使用的空间 | CPU时间 | 是否再内存中 | 是否再磁盘上 | 备注                                 |
+| ------------------- | ---------- | ------- | ------------ | ------------ | ------------------------------------ |
+| MEMORY_ONLY         | 高         | 低      | 是           | 否           |                                      |
+| MEMORY_ONLY_SER     | 低         | 高      | 是           | 否           |                                      |
+| MEMORY_AND_DISK     | 高         | 中等    | 部分         | 部分         | 如果数据在内存中放不下，则溢写到磁盘 |
+| MEMORY_AND_DISK_SER | 低         | 高      | 部分         | 部分         | 同上，存放的是序列化后的数据         |
+| DISK_ONLY           | 低         | 高      | 否           | 是           |                                      |
+
 
 
 **RDD CheckPoint 检查点**
+
+将RDD中间结果长久的写入磁盘。涉及到磁盘IO，性能较低，数据安全。
+
+为保证数据安全，会执行独立任务。
+
+为了提高效率，会和cache联合使用
+
+由于血缘依赖过长会造成容错成本过高，这样就不如在中间阶段做检查点容错，如果检查点之后有节点出现问题，可以从检查点开始重做血缘，减少了开销。
+
+```scala
+// 设置检查点路径
+sc.setCheckpointDir("./checkpoint1")
+// 创建一个 RDD，读取指定位置文件:hello atguigu atguigu
+val lineRdd: RDD[String] = sc.textFile("input/1.txt")
+// 业务逻辑
+val wordRdd: RDD[String] = lineRdd.flatMap(line => line.split(" "))
+val wordToOneRdd: RDD[(String, Long)] = wordRdd.map {
+ word => {
+ (word, System.currentTimeMillis())
+ }
+}
+// 增加缓存,避免再重新跑一个 job 做 checkpoint
+wordToOneRdd.cache()
+// 数据检查点：针对 wordToOneRdd 做检查点计算
+wordToOneRdd.checkpoint()
+// 触发执行逻辑
+wordToOneRdd.collect().foreach(println)
+```
+
+
+
+**Cache和Checkpoint 的区别**
+
+1. Cache 缓存只是将数据临时保存，不切断血缘依赖。Checkpoint 检查点切断血缘依赖。
+2. Cache缓存的数据通常存储在磁盘，内存等地方，可靠性低。Checkpoint 的数据通常存储在HDFS等容错、高可用的文件系统，可靠性高。
+3. 可以将checkpoint() 的RDD和使用cache()缓存，这样checkpoint 的job只需要从Cache缓存中读取数据即可，否则需要从头计算一次RDD。
 
 
 
@@ -396,6 +463,25 @@ Spark 的数据读取及数据保存可以从两个维度来作区分：文件�
 
 *  文件格式分为：text 文件、csv 文件、sequence 文件以及 Object 文件；
 *  文件系统分为：本地文件系统、HDFS、HBASE 以及数据库。
+
+
+
+```scala
+// text读取输入文件
+val inputRDD: RDD[String] = sc.textFile("input/1.txt")
+// text保存数据
+inputRDD.saveAsTextFile("output")
+
+// 保存数据为 SequenceFile
+dataRDD.saveAsSequenceFile("output")
+// 读取 SequenceFile 文件
+sc.sequenceFile[Int,Int]("output").collect().foreach(println)
+
+// object 保存数据
+dataRDD.saveAsObjectFile("output")
+//object 读取数据
+sc.objectFile[Int]("output").collect().foreach(println)
+```
 
 
 

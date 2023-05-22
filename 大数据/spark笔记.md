@@ -36,8 +36,6 @@ Hadoop 是一个大的生态，主要有底层的分布式文件系统HDFS、数
 
 ### Spark or Hadoop 
 
-
-
 * Hadoop 的MR数据处理框架主要用于一次性的数据计算（在处理数据式，会从存储设备中读取数据，进行逻辑操作，然后将处理的结果重新存储到介质中）。
 
 * Spark 和Hadoop 的根本差异是多个作业之间的数据通信问题：Spark 多个作业之间数据通信是基于内存，而Hadoop是基于磁盘。
@@ -95,7 +93,7 @@ Spark框架的核心是一个计算引擎，整体来说，它采用了标准mas
 
 两大核心组件：
 
-* Driver : Spark 驱动器节点，用于执行Spark 任务中的main方法，负责实际代码的执行工作。
+* **Driver** : Spark 驱动器节点，用于执行Spark 任务中的main方法，负责实际代码的执行工作。
 
   * 将用户程序传化为job作业
 
@@ -105,7 +103,7 @@ Spark框架的核心是一个计算引擎，整体来说，它采用了标准mas
 
   * 通过UI展示查询运行情况
 
-* Executor: 执行器是集群中工作节点（Worker）中的一个JVM进程，负责在Spark作业中运行具体任务Task ,任务之间相互独立。Spark应用启动时， Executor 节点被同时启动，并且始终伴随着整个Spark应用的声明周期而存在。
+* **Executor**: 执行器是集群中工作节点（Worker）中的一个JVM进程，负责在Spark作业中运行具体任务Task ,任务之间相互独立。Spark应用启动时， Executor 节点被同时启动，并且始终伴随着整个Spark应用的声明周期而存在。
 
   * 负责运行组成Spark 应用的任务，并将结果返回给驱动器进程
 
@@ -115,13 +113,13 @@ Spark框架的核心是一个计算引擎，整体来说，它采用了标准mas
 
 
 
-核心组件：Master & Worker 
+**核心组件：Master & Worker** 
 
 在Spark集群的独立部署环境中，Master 是一个进程，主要负责资源的调度和分配，并进行集群的监控等职责，类似于Yarn环境中的ResourceMananger, 而Worker也是一个进程，一个Worker 运行在集群中的一台服务器上，由Master 分配资源对数据进行并行处理，类似于Yarn环境中的NodeManager
 
 
 
-核心组件：ApplicationMaster
+**核心组件：ApplicationMaster**
 
 Hadoop 用户向Yarn 集群提交应用程序时，提交程序中应该包含ApplicationMaster, 用于向资源调度器申请执行任务的资源容器Container，运行用户自己的程序任务job, 监控整个任务的执行，跟踪整个任务的状态，处理任务失败等异常情况。
 
@@ -505,9 +503,21 @@ sc.objectFile[Int]("output").collect().foreach(println)
 
 
 
+### 总结
+
+spark 基于内存的计算引擎
 
 
-## Spark SQL
+
+
+
+
+
+
+
+
+
+## 第6章 Spark SQL
 
 ### 是什么？
 
@@ -560,7 +570,9 @@ SparkSession 是 Spark 最新的 SQL 查询起始点，实质上是 SQLContext �
 
 
 
-## Spark Streaming
+
+
+## 第7章 Spark Streaming
 
 ### 是什么？
 
@@ -581,3 +593,76 @@ Spark Streaming 用于流式数据的处理。Spark Streaming 支持的数据输
 
 
 SparkStreaming 准实时（秒/分），微批次的数据处理框架
+
+
+
+
+
+
+
+
+
+
+
+## 第8章 内核&源码
+
+学习并理解Spark 核心组件的运行机制，任务调度机制，内存管理机制，核心功能运行原理
+
+
+
+1. 环境准备（Yarn集群）
+   1. Drive, Executor
+2. 组件通信
+   1. Driver => Executor
+   2. Executor => Driver
+   3. Executor => Executor
+3. 应用程序的执行
+   1. RDD依赖，血缘
+   2. 阶段的划分
+   3. 任务的切分
+   4. 任务的调度
+   5. 任务的执行
+4. Shuffle
+   1. Shuffle的原理和执行过程
+   2. Shuffle写磁盘
+   3. Shuffle读取磁盘
+5. 内存管理
+   1. 内存的分类
+   2. 内存的配置
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

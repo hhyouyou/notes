@@ -177,7 +177,7 @@ WITH关键字在Hive中被称为Common Table Expression（CTE），是一种临�
 WITH语句的语法如下：
 
 ```
-vbnetCopy codeWITH alias AS (SELECT ...)
+WITH alias AS (SELECT ...)
 SELECT ...
 FROM ...
 WHERE ...
@@ -188,7 +188,7 @@ WHERE ...
 下面是一个使用WITH语句的例子：
 
 ```
-vbnetCopy codeWITH temp AS (
+WITH temp AS (
   SELECT col1, col2
   FROM table1
   WHERE col1 > 10
